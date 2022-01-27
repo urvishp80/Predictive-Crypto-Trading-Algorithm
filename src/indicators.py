@@ -44,7 +44,7 @@ def get_indicators(data, intervals=(5, 10, 20, 50, 100)):
     * Time Series Forecast (linear regression)
     * Bollinger Bands
     For more details see TA-lib documentation.
-    When there are options in indicator API, Close prices are used for computation. For volume TickVol is used.
+    When there are options in indicator API, close prices are used for computation. For volume Volume BTC is used.
     Note that some of the indicators are not stable and could output unexpected results if fed with NaNs or long series.
 
     :param data DataFrame with ticks data. Could be with or without embed data transactions.
@@ -56,51 +56,51 @@ def get_indicators(data, intervals=(5, 10, 20, 50, 100)):
     indicators = {}
     # Time period based indicators.
     for i in intervals:
-        indicators['DEMA_{}'.format(i)] = talib.DEMA(data['Close'], timeperiod=i)
-        indicators['EMA_{}'.format(i)] = talib.EMA(data['Close'], timeperiod=i)
-        indicators['KAMA_{}'.format(i)] = talib.KAMA(data['Close'], timeperiod=i)
-        indicators['MIDPRICE_{}'.format(i)] = talib.MIDPRICE(data['High'], data['Low'], timeperiod=i)
-        indicators['T3_{}'.format(i)] = talib.T3(data['Close'], timeperiod=i)
-        indicators['ADX_{}'.format(i)] = talib.ADX(data['High'], data['Low'], data['Close'], timeperiod=i)
+        indicators['DEMA_{}'.format(i)] = talib.DEMA(data['close'], timeperiod=i)
+        indicators['EMA_{}'.format(i)] = talib.EMA(data['close'], timeperiod=i)
+        indicators['KAMA_{}'.format(i)] = talib.KAMA(data['close'], timeperiod=i)
+        indicators['MIDPRICE_{}'.format(i)] = talib.MIDPRICE(data['high'], data['low'], timeperiod=i)
+        indicators['T3_{}'.format(i)] = talib.T3(data['close'], timeperiod=i)
+        indicators['ADX_{}'.format(i)] = talib.ADX(data['high'], data['low'], data['close'], timeperiod=i)
         indicators['AROON_down_{}'.format(i)], indicators['AROON_up_{}'.format(i)] = talib.AROON(
-            data['High'], data['Low'], timeperiod=i)
-        indicators['CCI_{}'.format(i)] = talib.CCI(data['High'], data['Low'], data['Close'], timeperiod=i)
-        indicators['MOM_{}'.format(i)] = talib.MOM(data['Close'], timeperiod=i)
-        indicators['ROCP_{}'.format(i)] = talib.ROCP(data['Close'], timeperiod=i)
-        indicators['RSI_{}'.format(i)] = talib.RSI(data['Close'], timeperiod=i)
-        indicators['ULTOSC_{}'.format(i)] = talib.ULTOSC(data['High'], data['Low'], data['Close'],
+            data['high'], data['low'], timeperiod=i)
+        indicators['CCI_{}'.format(i)] = talib.CCI(data['high'], data['low'], data['close'], timeperiod=i)
+        indicators['MOM_{}'.format(i)] = talib.MOM(data['close'], timeperiod=i)
+        indicators['ROCP_{}'.format(i)] = talib.ROCP(data['close'], timeperiod=i)
+        indicators['RSI_{}'.format(i)] = talib.RSI(data['close'], timeperiod=i)
+        indicators['ULTOSC_{}'.format(i)] = talib.ULTOSC(data['high'], data['low'], data['close'],
                                                          timeperiod1=i, timeperiod2=2 * i, timeperiod3=4 * i)
-        indicators['WILLR_{}'.format(i)] = talib.WILLR(data['High'], data['Low'], data['Close'], timeperiod=i)
-        indicators['NATR_{}'.format(i)] = talib.NATR(data['High'], data['Low'], data['Close'], timeperiod=i)
-        indicators['TSF_{}'.format(i)] = talib.TSF(data['Close'], timeperiod=i)
+        indicators['WILLR_{}'.format(i)] = talib.WILLR(data['high'], data['low'], data['close'], timeperiod=i)
+        indicators['NATR_{}'.format(i)] = talib.NATR(data['high'], data['low'], data['close'], timeperiod=i)
+        indicators['TSF_{}'.format(i)] = talib.TSF(data['close'], timeperiod=i)
         indicators['BBANDS_upper_{}'.format(i)], indicators['BBANDS_middle_{}'.format(i)], indicators['BBANDS_lower_{}'.format(i)] = talib.BBANDS(
-            data['Close'], timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
-        indicators['ATR_{}'.format(i)] = talib.ATR(data['High'], data['Low'], data['Close'], timeperiod=i)
-        indicators['NATR_{}'.format(i)] = talib.NATR(data['High'], data['Low'], data['Close'], timeperiod=i)
-        indicators['BETA_{}'.format(i)] = talib.BETA(data['High'], data['Low'], timeperiod=i)
-        indicators['CORREL_{}'.format(i)] = talib.CORREL(data['High'], data['Low'], timeperiod=1)
-        indicators['LINEARREG_ANGLE_{}'.format(i)] = talib.LINEARREG_ANGLE(data['Close'], timeperiod=i)
-        indicators['CLOSE_STDDEV_{}'.format(i)] = talib.STDDEV(data['Close'], timeperiod=i)
-        indicators['HIGH_STDDEV_{}'.format(i)] = talib.STDDEV(data['High'], timeperiod=i)
-        indicators['LOW_STDDEV_{}'.format(i)] = talib.STDDEV(data['Low'], timeperiod=i)
-        indicators['OPEN_STDDEV_{}'.format(i)] = talib.STDDEV(data['Open'], timeperiod=i)
-        indicators['CLOSE_VAR_{}'.format(i)] = talib.VAR(data['Close'], timeperiod=i, nbdev=1)
-        indicators['OPEN_VAR_{}'.format(i)] = talib.VAR(data['Open'], timeperiod=i, nbdev=1)
-        indicators['HIGH_VAR_{}'.format(i)] = talib.VAR(data['High'], timeperiod=i, nbdev=1)
-        indicators['LOW_VAR_{}'.format(i)] = talib.VAR(data['Low'], timeperiod=i, nbdev=1)
+            data['close'], timeperiod=5, nbdevup=2, nbdevdn=2, matype=0)
+        indicators['ATR_{}'.format(i)] = talib.ATR(data['high'], data['low'], data['close'], timeperiod=i)
+        indicators['NATR_{}'.format(i)] = talib.NATR(data['high'], data['low'], data['close'], timeperiod=i)
+        indicators['BETA_{}'.format(i)] = talib.BETA(data['high'], data['low'], timeperiod=i)
+        indicators['CORREL_{}'.format(i)] = talib.CORREL(data['high'], data['low'], timeperiod=1)
+        indicators['LINEARREG_ANGLE_{}'.format(i)] = talib.LINEARREG_ANGLE(data['close'], timeperiod=i)
+        indicators['close_STDDEV_{}'.format(i)] = talib.STDDEV(data['close'], timeperiod=i)
+        indicators['high_STDDEV_{}'.format(i)] = talib.STDDEV(data['high'], timeperiod=i)
+        indicators['low_STDDEV_{}'.format(i)] = talib.STDDEV(data['low'], timeperiod=i)
+        indicators['open_STDDEV_{}'.format(i)] = talib.STDDEV(data['open'], timeperiod=i)
+        indicators['close_VAR_{}'.format(i)] = talib.VAR(data['close'], timeperiod=i, nbdev=1)
+        indicators['open_VAR_{}'.format(i)] = talib.VAR(data['open'], timeperiod=i, nbdev=1)
+        indicators['high_VAR_{}'.format(i)] = talib.VAR(data['high'], timeperiod=i, nbdev=1)
+        indicators['low_VAR_{}'.format(i)] = talib.VAR(data['low'], timeperiod=i, nbdev=1)
     # Indicators that do not depend on time periods.
-    indicators['Close_macd'], indicators['Close_macdsignal'], indicators['Close_macdhist'] = talib.MACD(data['Close'], fastperiod=12, slowperiod=26, signalperiod=9)
-    indicators['Open_macd'], indicators['Open_macdsignal'], indicators['Open_macdhist'] = talib.MACD(data['Open'], fastperiod=12, slowperiod=26, signalperiod=9)
-    indicators['High_macd'], indicators['High_macdsignal'], indicators['High_macdhist'] = talib.MACD(data['High'], fastperiod=12, slowperiod=26, signalperiod=9)
-    indicators['Low_macd'], indicators['Low_macdsignal'], indicators['Low_macdhist'] = talib.MACD(data['Low'], fastperiod=12, slowperiod=26, signalperiod=9)
-    indicators['SAR'] = talib.SAR(data['High'], data['Low'])
-    indicators['AD'] = talib.AD(data['High'], data['Low'], data['Close'], data['TickVol'])
-    indicators['OBV'] = talib.OBV(data['Close'], data['TickVol'])
-    indicators['HT_TRENDLINE'] = talib.HT_TRENDLINE(data['Close'])
-    indicators['HT_TRENDMODE'] = talib.HT_TRENDMODE(data['Close'])
-    indicators['HT_DCPERIOD'] = talib.HT_DCPERIOD(data['Close'])
-    indicators['HT_DCPHASE'] = talib.HT_DCPHASE(data['Close'])
-    indicators['TYPPRICE'] = talib.TYPPRICE(data['High'], data['Low'], data['Close'])
+    indicators['close_macd'], indicators['close_macdsignal'], indicators['close_macdhist'] = talib.MACD(data['close'], fastperiod=12, slowperiod=26, signalperiod=9)
+    indicators['open_macd'], indicators['open_macdsignal'], indicators['open_macdhist'] = talib.MACD(data['open'], fastperiod=12, slowperiod=26, signalperiod=9)
+    indicators['high_macd'], indicators['high_macdsignal'], indicators['high_macdhist'] = talib.MACD(data['high'], fastperiod=12, slowperiod=26, signalperiod=9)
+    indicators['low_macd'], indicators['low_macdsignal'], indicators['low_macdhist'] = talib.MACD(data['low'], fastperiod=12, slowperiod=26, signalperiod=9)
+    indicators['SAR'] = talib.SAR(data['high'], data['low'])
+    indicators['AD'] = talib.AD(data['high'], data['low'], data['close'], data['Volume BTC'])
+    indicators['OBV'] = talib.OBV(data['close'], data['Volume BTC'])
+    indicators['HT_TRENDLINE'] = talib.HT_TRENDLINE(data['close'])
+    indicators['HT_TRENDMODE'] = talib.HT_TRENDMODE(data['close'])
+    indicators['HT_DCPERIOD'] = talib.HT_DCPERIOD(data['close'])
+    indicators['HT_DCPHASE'] = talib.HT_DCPHASE(data['close'])
+    indicators['TYPPRICE'] = talib.TYPPRICE(data['high'], data['low'], data['close'])
     return pd.DataFrame(indicators)
 
 
@@ -111,6 +111,6 @@ def get_price_patterns(data):
     :param data: DataFrame with ticks data. Could be with or without embed transactions data.
     :return: DataFrame with pattern "likelihoods" on -200 - 200 scale.
     """
-    patterns = {name: getattr(talib, name)(data['Open'], data['High'], data['Low'], data['Close'])
+    patterns = {name: getattr(talib, name)(data['open'], data['high'], data['low'], data['close'])
                 for name in talib.get_function_groups()['Pattern Recognition']}
     return pd.DataFrame(patterns)
