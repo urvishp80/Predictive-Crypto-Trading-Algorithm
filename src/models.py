@@ -1,6 +1,7 @@
-from src.logger import Logger
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from src.logger import LOGGER
+from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
 import lightgbm as lgb
+import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -12,7 +13,7 @@ class LightGBMModel:
         self.model_parameters = model_parameters
         self.fit_parameters = fit_parameters
         self.config = config
-        self.logger = Logger
+        self.logger = LOGGER
 
         self._model = None if self.config.saved_path is None else self.load(
             self.load(self.config.saved_path))
@@ -53,13 +54,13 @@ class LightGBMModel:
 
     def eval(self, features, labels):
         preds = self._model.predict(features)
-        acc = accuracy_score(labels, preds)
-        f1 = f1_score(labels, preds)
-        precision = precision_score(labels, preds, average='micro')
-        recall = recall_score(labels, preds, average='micro')
+        acc = roc_auc_score(labels, preds)
+        f1 = f1_score(labels, np.round(preds), average='micro')
+        precision = precision_score(labels, np.round(preds), average='micro')
+        recall = recall_score(labels, np.round(preds), average='micro')
 
-        self.logger.info(f"Accuracy score of model is {round(acc, 4)}.")
-        self.logger.infof(f"F1 score of model is {round(f1, 4)}.")
+        self.logger.info(f"AUC score of model is {round(acc, 4)}.")
+        self.logger.info(f"F1 score of model is {round(f1, 4)}.")
         self.logger.info(f"Precision score is {round(precision, 4)}.")
         self.logger.info(f"Recall score is {round(recall, 4)}")
         return acc, f1, precision, recall

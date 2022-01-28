@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 
 # data paths
 DATA_FOLDER = 'data'
@@ -6,14 +7,17 @@ FILE_NAME = 'btc_dataset.csv'
 DATA_PATH = os.path.join(DATA_FOLDER, FILE_NAME)
 
 # target definition and columns to drop
-TARGET = 'Objective 1'
+TARGET = 'Obj 1 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
-                 'Objective 7', 'Objective 8', 'Obj 1 Linked', 'Obj 2 Linked', 'Obj 3 Linked',
+                 'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 3 Linked',
                  'Obj 4 Linked', 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 7 Linked', 'Obj 8 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
 INTERVALS = (5, 10, 15, 20, 30)
+
+# data splitting
+SPLIT_DATE = pd.to_datetime(pd.Series(['2021/09/30']), format='%Y/%m/%d')
 
 # model parameters
 model_parameters = {'num_leaves': 2 ** 6,
@@ -36,7 +40,7 @@ model_parameters = {'num_leaves': 2 ** 6,
                     'data_random_seed': None,
                     'boosting_type': 'gbdt',
                     'verbose': 1,
-                    'metric': ['auc', 'binary_logloss'],
+                    'metric': ['auc'],
                     'n_jobs': -1,
                     }
 
@@ -46,3 +50,7 @@ fit_parameters = {
     'early_stopping_rounds': 200,
     'verbose_eval': 500
 }
+
+# model save and load paths
+model_save_path = './weights/lgb1.txt'
+saved_path = None #'./weights/lgb1.txt'
