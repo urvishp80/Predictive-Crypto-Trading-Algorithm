@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import tensorflow as tf
 
 # data paths
 DATA_FOLDER = 'data'
@@ -14,23 +15,23 @@ OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Ob
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
-INTERVALS = (5, 10, 15, 20, 30)
+INTERVALS = (5, 15, 30, 60, 100)
 
 # data splitting
 SPLIT_DATE = pd.to_datetime(pd.Series(['2021/09/30']), format='%Y/%m/%d')
 
 # model parameters
-model_parameters = {'num_leaves': 2 ** 6,
+model_parameters = {'num_leaves': 2 ** 7,
                     'learning_rate': 0.05,
                     'bagging_fraction': 0.8,
                     'bagging_freq': 1,
                     'feature_fraction': 0.7,
                     'feature_fraction_bynode': 1,
-                    'min_data_in_leaf': 10,
+                    'min_data_in_leaf': 30,
                     'min_gain_to_split': 0,
                     'lambda_l1': 0.01,
                     'lambda_l2': 0,
-                    'max_bin': 512,
+                    'max_bin': 1024,
                     'max_depth': -1,
                     'objective': 'binary',
                     'seed': None,
@@ -46,11 +47,26 @@ model_parameters = {'num_leaves': 2 ** 6,
 
 # training parameters
 fit_parameters = {
-    'boosting_rounds': 20000,
+    'boosting_rounds': 200000,
     'early_stopping_rounds': 200,
     'verbose_eval': 500
 }
 
+# neg_samples_factor-
+neg_samples_factor = 1
+
+# previous context
+n_context = 25
+
 # model save and load paths
 model_save_path = './weights/lgb1.txt'
-saved_path = None #'./weights/lgb1.txt'
+saved_path = None  # './weights/lgb1.txt'
+
+# Use LSTM
+use_lstm = False
+
+# LSTM model config
+lstm_config = {'optimizer': tf.keras.optimizers.SGD(learning_rate=0.01),
+               'epochs': 10,
+               'batch_size': 128,
+               }

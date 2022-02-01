@@ -1,6 +1,6 @@
 import talib
 import pandas as pd
-
+import pandas_ta as ta
 
 def enrich_data(data):
     """
@@ -102,6 +102,44 @@ def get_indicators(data, intervals=(5, 10, 20, 50, 100)):
     indicators['HT_DCPHASE'] = talib.HT_DCPHASE(data['close'])
     indicators['TYPPRICE'] = talib.TYPPRICE(data['high'], data['low'], data['close'])
     return pd.DataFrame(indicators)
+
+
+def get_additional_indicators(data):
+    # additional_indicators = []
+    # prev_col = data.columns
+    log_return = data.ta.log_return(cumulative=True)
+    percent_return = data.ta.percent_return(cumulative=True)
+    cksp = data.ta.cksp()
+    alma = data.ta.alma()
+    adosc = data.ta.adosc()
+    aroon = data.ta.aroon()
+    atr = data.ta.atr()
+    chop = data.ta.chop()
+    tsi = data.ta.tsi()
+    ichimoku = data.ta.ichimoku()
+    donchian = data.ta.donchian(lower_length=10, upper_length=15)
+    hma = data.ta.hma()
+    kama = data.ta.kama()
+    stochrsi = data.ta.stochrsi()
+    coppock = data.ta.coppock()
+    dm = data.ta.dm()
+    massi = data.ta.massi()
+    mfi = data.ta.mfi()
+    eri = data.ta.eri()
+    true_range = data.ta.true_range()
+    all_indicators = [log_return, percent_return, cksp, alma, adosc, aroon, atr, chop, tsi,
+                      ichimoku, donchian, hma, kama, stochrsi, coppock, dm, massi, mfi, eri,
+                      true_range]
+    df_and_series = []
+    for df in all_indicators:
+        if type(df) == tuple:
+            for j in df:
+                df_and_series.append(j)
+        else:
+            df_and_series.append(df)
+    # [df for df in all_indicators if type(df) != tuple else j for j in df for df in all_indicators]
+    indicators = pd.concat(df_and_series, axis=1)
+    return indicators
 
 
 def get_price_patterns(data):
