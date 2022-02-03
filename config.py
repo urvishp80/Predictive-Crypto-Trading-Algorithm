@@ -8,10 +8,10 @@ FILE_NAME = 'btc_dataset.csv'
 DATA_PATH = os.path.join(DATA_FOLDER, FILE_NAME)
 
 # target definition and columns to drop
-TARGET = 'Obj 8 Linked'
+TARGET = 'Obj 7 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
                  'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 3 Linked',
-                 'Obj 4 Linked', 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 7 Linked', 'Obj 1 Linked']
+                 'Obj 4 Linked', 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 1 Linked', 'Obj 8 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
