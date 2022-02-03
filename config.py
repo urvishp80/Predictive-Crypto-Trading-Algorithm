@@ -8,14 +8,17 @@ FILE_NAME = 'btc_dataset.csv'
 DATA_PATH = os.path.join(DATA_FOLDER, FILE_NAME)
 
 # target definition and columns to drop
-TARGET = 'Obj 1 Linked'
+TARGET = 'Obj 8 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
                  'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 3 Linked',
-                 'Obj 4 Linked', 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 7 Linked', 'Obj 8 Linked']
+                 'Obj 4 Linked', 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 7 Linked', 'Obj 1 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
 INTERVALS = (5, 15, 30, 60, 100)
+
+# feature selection threshold
+fe_threshold = 0.3
 
 # data splitting
 SPLIT_DATE = pd.to_datetime(pd.Series(['2021/09/30']), format='%Y/%m/%d')
@@ -23,14 +26,14 @@ SPLIT_DATE = pd.to_datetime(pd.Series(['2021/09/30']), format='%Y/%m/%d')
 # model parameters
 model_parameters = {'num_leaves': 2 ** 7,
                     'learning_rate': 0.05,
-                    'bagging_fraction': 0.8,
-                    'bagging_freq': 1,
-                    'feature_fraction': 0.7,
-                    'feature_fraction_bynode': 1,
-                    'min_data_in_leaf': 30,
-                    'min_gain_to_split': 0,
+                    'bagging_fraction': 0.7,
+                    'bagging_freq': 10,
+                    'feature_fraction': 0.4,
+                    'feature_fraction_bynode': 0.8,
+                    'min_data_in_leaf': 500,
+                    'min_gain_to_split': 0.1,
                     'lambda_l1': 0.01,
-                    'lambda_l2': 0,
+                    'lambda_l2': 0.001,
                     'max_bin': 1024,
                     'max_depth': -1,
                     'objective': 'binary',
@@ -56,7 +59,7 @@ fit_parameters = {
 neg_samples_factor = 1
 
 # previous context
-n_context = 25
+n_context = 20
 
 # model save and load paths
 model_save_path = './weights/lgb1.txt'

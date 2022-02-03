@@ -3,7 +3,7 @@ import abc
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, LSTM, GRU, RNN, Embedding, Dropout, Flatten, Bidirectional, Conv1D, Add, Multiply, Input
 from tensorflow.keras.models import Model
-from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score
+from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, accuracy_score
 import lightgbm as lgb
 import numpy as np
 import warnings
@@ -58,16 +58,18 @@ class LightGBMModel:
 
     def eval(self, features, labels):
         preds = self._model.predict(features)
-        acc = roc_auc_score(labels, preds)
+        auc = roc_auc_score(labels, preds)
+        acc = accuracy_score(labels, np.round(preds))
         f1 = f1_score(labels, np.round(preds), average='micro')
         precision = precision_score(labels, np.round(preds), average='micro')
         recall = recall_score(labels, np.round(preds), average='micro')
 
-        self.logger.info(f"AUC score of model is {round(acc, 4)}.")
+        self.logger.info(f"AUC score of model is {round(auc, 4)}.")
+        self.logger.info(f"Accuracy score of model is {round(acc, 4)}.")
         self.logger.info(f"F1 score of model is {round(f1, 4)}.")
         self.logger.info(f"Precision score is {round(precision, 4)}.")
         self.logger.info(f"Recall score is {round(recall, 4)}")
-        return acc, f1, precision, recall
+        return auc, f1, precision, recall
 
 
 def evaluate(model, features, labels):

@@ -57,7 +57,8 @@ if __name__ == '__main__':
         targets = targets
         for i in range(0, len(train_df), 150000):
             log.info(f"Preparing data for LGBM with previous context {config.n_context}.")
-            # x = features[i:i+150000], y = targets[i:i+150000]
+            x = features[i:i+150000]
+            y = targets[i:i+150000]
             x, y = create_flatten_features(features[i:i+150000], targets[i:i+150000], config.n_context, features_names)
             np.save(f'./data/train_{i}.npy', x)
             np.save(f'./data/targets_{i}.npy', y)
@@ -89,5 +90,20 @@ if __name__ == '__main__':
         log.info("Initializing LightGBM model.")
         model = LightGBMModel(config.model_parameters, config.fit_parameters, config)
 
-        # model.train(features, targets, (valid_feat, valid_targets), save=False)
-        # acc, f1, precision, recall = model.eval(valid_feat, valid_targets)
+        valid_feat = np.load('./data/valid_feat.npy')
+        valid_targets = np.load('./data/valid_targets.npy')
+        x = []
+        y = []
+        for i in range(300000, len(train_df), 150000):
+            features = np.load(f'./data/train_{i}.npy')
+            x.append(features)
+            targets = np.load(f'./data/targets_{i}.npy')
+            y.append(targets)
+
+        features = np.concatenate(x)
+        targets = np.concatenate(y)
+        print(features.shape, targets.shape)
+        model.train(features, targets, (valid_feat, valid_targets), save=False)
+        for i in range(0, len(valid_feat), 30000):
+            print(f'**************** {i} *****************')
+            acc, f1, precision, recall = model.eval(valid_feat[i:i+30000], valid_targets[i:i+30000])

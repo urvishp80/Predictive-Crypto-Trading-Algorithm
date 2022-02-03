@@ -62,7 +62,7 @@ def extract_most_important_features(df):
     index_of_feature = None
     for i in range(len(corr_vec_sorted)):
         cum_sum = corr_vec_sorted.iloc[:i].sum() / sum_corrs
-        if cum_sum > 0.15:  # Here 10% bumping threshold is used
+        if cum_sum > config.fe_threshold:  # Here 10% bumping threshold is used
             index_of_feature = i
             break
     if index_of_feature is None:
