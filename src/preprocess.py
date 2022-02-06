@@ -68,7 +68,7 @@ def create_balanced_data(features, targets):
     positive_indices = np.argwhere(targets)[:, 0]
     negative_indices = np.argwhere(targets == 0)[:, 0]
 
-    total_pos_samples = len(positive_indices)
+    total_pos_samples = len(positive_indices) + 90000
     if len(positive_indices) < len(negative_indices):
         negative_indices = negative_indices[-total_pos_samples:]
 
