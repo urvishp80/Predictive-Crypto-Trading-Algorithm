@@ -3,6 +3,20 @@ import numpy as np
 from tqdm import tqdm
 
 import config
+from src.logger import LOGGER
+from src.indicators import get_indicators, get_price_patterns, get_additional_indicators
+
+
+def prepare_data(df):
+    LOGGER.info("Getting indicator for data.")
+    df_indicators = get_indicators(df, intervals=config.INTERVALS)
+    LOGGER.info("Getting price pattern for data.")
+    df_price_pattern = get_price_patterns(df)
+    LOGGER.info("Getting additional indicators.")
+    df_add_indicators = get_additional_indicators(df)
+    LOGGER.info("Merging all data into one.")
+    data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators)
+    return data
 
 
 def get_data(path, drop_col=None):
@@ -16,15 +30,24 @@ def get_data(path, drop_col=None):
 
 def get_features_targets(data, target_col, features_names, date_col=None):
     if date_col is not None:
-        cols = [target_col] + [date_col]
-        features = data.drop(cols, axis=1)
+        if target_col is not None:
+            cols = [target_col] + [date_col]
+            features = data.drop(cols, axis=1)
+        else:
+            cols = [date_col]
+            features = data.drop(cols, axis=1)
     else:
-        features = data.drop(target_col, axis=1)
-    targets = np.where(data[target_col] == False, 0, 1)
-    # cols = [col for col in features.columns if col not in features_names]
-    # print(cols)
-    d = features[features_names]
-    return d, targets.reshape(-1, 1)
+        if target_col is not None:
+            features = data.drop(target_col, axis=1)
+        else:
+            pass
+    if target_col is not None:
+        targets = np.where(data[target_col] == False, 0, 1)
+        d = features[features_names]
+        return d, targets.reshape(-1, 1)
+    else:
+        d = features[features_names]
+        return d, None
 
 
 def split_data(df, date):
@@ -34,14 +57,20 @@ def split_data(df, date):
     return train, test
 
 
-def merge_data(data, indicators, price_patterns, additional_indicators=None):
+def merge_data(data, indicators, price_patterns, additional_indicators=None, test=False):
     if additional_indicators is not None:
         data = pd.concat((data, indicators.shift(), price_patterns.shift(), additional_indicators.shift()), axis=1) #.fillna(method='bfill').fillna(method='ffill')
-        data = data.dropna(subset=['Date', config.TARGET])
+        if test:
+            data = data.dropna(subset=['Date'])
+        else:
+            data = data.dropna(subset=['Date', config.TARGET])
         return data.fillna(0)
     else:
         data = pd.concat((data, indicators.shift(), price_patterns.shift()), axis=1) #.fillna(0)
-        data = data.dropna(subset=['Date', config.TARGET])
+        if test:
+            data = data.dropna(subset=['Date'])
+        else:
+            data = data.dropna(subset=['Date', config.TARGET])
         return data.fillna(0)
 
 
@@ -100,17 +129,18 @@ def create_flatten_features(data, targets, n_context, features_names):
     for i in tqdm(range(n_context, len(features))):
         data_slice = features[i - n_context: i, :].reshape(1, -1)
         all_features.append(data_slice)
-        tar = targets[i]
-        all_targets.append(tar)
+        if targets is not None:
+            tar = targets[i]
+            all_targets.append(tar)
     all_features = np.squeeze(np.asarray(all_features))
-    all_targets = np.asarray(all_targets)
-    print(all_targets.shape, all_features.shape)
+    if targets is not None:
+        all_targets = np.asarray(all_targets)
     return all_features, all_targets
 
 
-def get_lgbm_features(data, targets, n_context, features_names):
-    features = data[features_names]
-    features = features.values
+def get_lgbm_features(features, targets, n_context, features_names):
+    # features = data[features_names]
+    # features = features.
     features[np.isnan(features)] = 0
 
     # For xgboost we flatten all data and predict if there is a transaction

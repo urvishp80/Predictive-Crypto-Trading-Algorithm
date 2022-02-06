@@ -12,15 +12,18 @@ warnings.filterwarnings('ignore')
 
 class LightGBMModel:
 
-    def __init__(self, model_parameters, fit_parameters, config):
+    def __init__(self, model_parameters, fit_parameters, config, inference=False):
 
         self.model_parameters = model_parameters
         self.fit_parameters = fit_parameters
         self.config = config
         self.logger = LOGGER
+        self.inference = inference
 
-        self._model = None if self.config.saved_path is None else self.load(
-            self.load(self.config.saved_path))
+        if self.inference:
+            self._model = self.load(self.config.saved_path)
+        else:
+            self._model = None   # if self.config.saved_path is None else self.load(self.load(self.config.saved_path))
 
     def save(self):
         self._model.save_model(self.config.model_save_path)
@@ -28,8 +31,9 @@ class LightGBMModel:
             self.config.model_save_path))
 
     def load(self, path):
-        self._model = lgb.Booster(model_file=path)  # init model
+        model = lgb.Booster(model_file=path)  # init model
         self.logger.info('Loaded model from {}'.format(path))
+        return model
 
     def train(self, features, targets, evaluation_set, seed=2022, save=True):
         trn = lgb.Dataset(features, label=targets)
@@ -58,11 +62,12 @@ class LightGBMModel:
 
     def eval(self, features, labels):
         preds = self._model.predict(features)
+        # preds = np.where(preds > 0.35, 1, 0)
         auc = roc_auc_score(labels, preds)
         acc = accuracy_score(labels, np.round(preds))
-        f1 = f1_score(labels, np.round(preds), average='micro')
-        precision = precision_score(labels, np.round(preds), average='micro')
-        recall = recall_score(labels, np.round(preds), average='micro')
+        f1 = f1_score(labels, np.round(preds), average='binary')
+        precision = precision_score(labels, np.round(preds), average='binary')
+        recall = recall_score(labels, np.round(preds), average='binary')
 
         self.logger.info(f"AUC score of model is {round(auc, 4)}.")
         self.logger.info(f"Accuracy score of model is {round(acc, 4)}.")
