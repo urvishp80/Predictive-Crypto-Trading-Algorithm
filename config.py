@@ -55,9 +55,9 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'metric': ['auc'],
                     'n_jobs': -1,
                     'force_col_wise': True,
-                    # 'is_unbalance': True
+                    'is_unbalance': True
                     # 'tree_learner': 'voting',
-                    'scale_pos_weight': 2.5
+                    # 'scale_pos_weight': 0.3
                     }
 
 # training parameters
