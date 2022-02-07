@@ -59,7 +59,7 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'force_col_wise': True,
                     # 'is_unbalance': True
                     # 'tree_learner': 'voting',
-                    'scale_pos_weight': 2.85
+                    'scale_pos_weight': 5.00
                     }
 
 # training parameters

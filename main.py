@@ -26,52 +26,52 @@ if __name__ == '__main__':
     df = get_data(config.DATA_PATH, drop_col=config.DROP_COLS)
     log.info(f"Spliting data for training and testing based on the date {config.SPLIT_DATE.iloc[0]}")
     train_df, test_df = split_data(df, config.SPLIT_DATE.iloc[0])
-    train_df = prepare_data(train_df)
-    test_df = prepare_data(test_df)
-    count_positive_labels = len(train_df[train_df[config.TARGET] == True])
-    log.info(f"Total number of positive labels in data {count_positive_labels}.")
+    # train_df = prepare_data(train_df)
+    # test_df = prepare_data(test_df)
+    # count_positive_labels = len(train_df[train_df[config.TARGET] == True])
+    # log.info(f"Total number of positive labels in data {count_positive_labels}.")
 
-    log.info("Performing features importance on full data.")
-    features_names, _, corr_mtrx = extract_most_important_features(train_df)
-    log.info(f"Important features are {features_names}. Total features: {len(features_names)}")
+    # log.info("Performing features importance on full data.")
+    # features_names, _, corr_mtrx = extract_most_important_features(train_df)
+    # log.info(f"Important features are {features_names}. Total features: {len(features_names)}")
 
-    log.info(f"Count of target in training {train_df[config.TARGET].value_counts()}")
-    log.info(f"Count of target in testing {test_df[config.TARGET].value_counts()}")
+    # log.info(f"Count of target in training {train_df[config.TARGET].value_counts()}")
+    # log.info(f"Count of target in testing {test_df[config.TARGET].value_counts()}")
 
-    log.info("Getting features and targets for training data.")
-    features, targets = get_features_targets(train_df, config.TARGET, features_names, date_col='Date')
-    log.info("Getting features and targets for testing data.")
-    valid_feat, valid_targets = get_features_targets(test_df, config.TARGET, features_names, date_col='Date')
+    # log.info("Getting features and targets for training data.")
+    # features, targets = get_features_targets(train_df, config.TARGET, features_names, date_col='Date')
+    # log.info("Getting features and targets for testing data.")
+    # valid_feat, valid_targets = get_features_targets(test_df, config.TARGET, features_names, date_col='Date')
 
-    log.info(f"Shape of train features: {features.shape}, Shape of train targets: {targets.shape}")
-    log.info(f"Shape of test features: {valid_feat.shape}, Shape of the test targets: {valid_targets.shape}")
+    # log.info(f"Shape of train features: {features.shape}, Shape of train targets: {targets.shape}")
+    # log.info(f"Shape of test features: {valid_feat.shape}, Shape of the test targets: {valid_targets.shape}")
 
-    if config.use_lstm:
-        log.info("Normalizing features for LSTM model.")
-        features = scaler.fit_transform(features[features_names])
-        valid_feat = scaler.transform(valid_feat[features_names])
+    # if config.use_lstm:
+    #     log.info("Normalizing features for LSTM model.")
+    #     features = scaler.fit_transform(features[features_names])
+    #     valid_feat = scaler.transform(valid_feat[features_names])
 
-    if not config.use_lstm:
-        features = features.values
-        valid_feat = valid_feat.values
-        targets = targets
-        for i in range(0, len(train_df), 150000):
-            log.info(f"Preparing data for LGBM with previous context {config.n_context}.")
-            x = features[i:i+150000]
-            y = targets[i:i+150000]
-            x, y = create_flatten_features(features[i:i+150000], targets[i:i+150000], config.n_context, features_names)
-            np.save(f'./data/train_{i}.npy', x)
-            np.save(f'./data/targets_{i}.npy', y)
-        valid_feat, valid_targets = create_flatten_features(valid_feat, valid_targets, config.n_context, features_names)
-        np.save('./data/valid_feat.npy', valid_feat)
-        np.save('./data/valid_targets.npy', valid_targets)
-    else:
-        log.info(f"Preparing data for LSTM with previous context {config.n_context}.")
-        features, targets = create_lstm_features(features[0:200000], targets[0:200000], config.n_context, features_names)
-        valid_feat, valid_targets = create_lstm_features(valid_feat, valid_targets, config.n_context, features_names)
+    # if not config.use_lstm:
+    #     features = features.values
+    #     valid_feat = valid_feat.values
+    #     targets = targets
+    #     for i in range(0, len(train_df), 150000):
+    #         log.info(f"Preparing data for LGBM with previous context {config.n_context}.")
+    #         x = features[i:i+150000]
+    #         y = targets[i:i+150000]
+    #         x, y = create_flatten_features(features[i:i+150000], targets[i:i+150000], config.n_context, features_names)
+    #         np.save(f'./data/train_{i}.npy', x)
+    #         np.save(f'./data/targets_{i}.npy', y)
+    #     valid_feat, valid_targets = create_flatten_features(valid_feat, valid_targets, config.n_context, features_names)
+    #     np.save('./data/valid_feat.npy', valid_feat)
+    #     np.save('./data/valid_targets.npy', valid_targets)
+    # else:
+    #     log.info(f"Preparing data for LSTM with previous context {config.n_context}.")
+    #     features, targets = create_lstm_features(features[0:200000], targets[0:200000], config.n_context, features_names)
+    #     valid_feat, valid_targets = create_lstm_features(valid_feat, valid_targets, config.n_context, features_names)
 
-    log.info(f"Shape of train features: {features.shape}, Shape of train targets: {targets.shape}")
-    log.info(f"Shape of test features: {valid_feat.shape}, Shape of the test targets: {valid_targets.shape}")
+    # log.info(f"Shape of train features: {features.shape}, Shape of train targets: {targets.shape}")
+    # log.info(f"Shape of test features: {valid_feat.shape}, Shape of the test targets: {valid_targets.shape}")
 
     if config.use_lstm:
         log.info("Initializing LSTM model.")
@@ -113,13 +113,13 @@ if __name__ == '__main__':
         model.train(features, targets, (valid_feat, valid_targets), save=False)
 
         for i in range(0, len(features), 50000):
-            print(f'**************** {i} *****************')
+            log.info(f'**************** {i} *****************')
             acc, f1, precision, recall = model.eval(features[i:i+50000], targets[i:i+50000])
 
         for i in range(0, len(valid_feat), 30000):
-            print(f'**************** {i} *****************')
+            log.info(f'**************** {i} *****************')
             acc, f1, precision, recall = model.eval(valid_feat[i:i+30000], valid_targets[i:i+30000])
         model.save()
         log.info(f"Saving features names to {config.feature_save_path} for future use.")
-        with open(config.feature_save_path, 'wb') as f:
-            pickle.dump(features_names, f)
+        # with open(config.feature_save_path, 'wb') as f:
+        #     pickle.dump(features_names, f)
