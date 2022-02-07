@@ -51,6 +51,6 @@ if __name__ == '__main__':
 
     df['Predictions'] = list(range(config.n_context)) + predictions.tolist()
     df['Class'] = list(range(config.n_context)) + np.round(predictions).tolist()
-    # df['Class'] = np.where(df['Class'] == 0, False, True)
+
     print(df.head())
     df.to_csv(f"./data/btc_predictions_{config.TARGET}_{config.saved_path.split('/')[-1][:-4]}.csv", index=False)
