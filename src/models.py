@@ -1,5 +1,6 @@
 from src.logger import LOGGER
 import abc
+import os
 import tensorflow as tf
 from tensorflow.keras.layers import Dense, LSTM, GRU, RNN, Embedding, Dropout, Flatten, Bidirectional, Conv1D, Add, Multiply, Input
 from tensorflow.keras.models import Model
@@ -26,6 +27,7 @@ class LightGBMModel:
             self._model = None   # if self.config.saved_path is None else self.load(self.load(self.config.saved_path))
 
     def save(self):
+        os.makedirs(f'{self.config.MODELS_FOLDER}/{self.config.TARGET}', exist_ok=True)
         self._model.save_model(self.config.model_save_path)
         self.logger.info('Saved model to {}'.format(
             self.config.model_save_path))
@@ -79,16 +81,18 @@ class LightGBMModel:
 
 def evaluate(model, features, labels):
     preds = model.predict(features)
-    acc = roc_auc_score(labels, preds)
-    f1 = f1_score(labels, np.round(preds), average='micro')
-    precision = precision_score(labels, np.round(preds), average='micro')
-    recall = recall_score(labels, np.round(preds), average='micro')
+    auc = roc_auc_score(labels, preds)
+    acc = accuracy_score(labels, np.round(preds))
+    f1 = f1_score(labels, np.round(preds), average='binary')
+    precision = precision_score(labels, np.round(preds), average='binary')
+    recall = recall_score(labels, np.round(preds), average='binary')
 
-    print(f"AUC score of model is {round(acc, 4)}.")
-    print(f"F1 score of model is {round(f1, 4)}.")
-    print(f"Precision score is {round(precision, 4)}.")
-    print(f"Recall score is {round(recall, 4)}")
-    return acc, f1, precision, recall
+    LOGGER.info(f"AUC score of model is {round(auc, 4)}.")
+    LOGGER.info(f"Accuracy score of model is {round(acc, 4)}.")
+    LOGGER.info(f"F1 score of model is {round(f1, 4)}.")
+    LOGGER.info(f"Precision score is {round(precision, 4)}.")
+    LOGGER.info(f"Recall score is {round(recall, 4)}")
+    return preds, auc, f1, precision, recall
 
 
 class BaseModel(abc.ABC):

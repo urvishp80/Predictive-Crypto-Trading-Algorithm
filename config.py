@@ -1,9 +1,11 @@
 import os
 import pandas as pd
 import tensorflow as tf
+from src.utils import get_models_path
 
 # data paths
 DATA_FOLDER = 'data'
+MODELS_FOLDER = 'weights'
 FILE_NAME = 'btc_dataset.csv'
 DATA_PATH = os.path.join(DATA_FOLDER, FILE_NAME)
 
@@ -74,8 +76,8 @@ neg_samples_factor = 1
 n_context = 20
 
 # model save and load paths
-model_save_path = f'./weights/lgb3_{str(TARGET)}.txt'
-saved_path = f'./weights/lgb3_{str(TARGET)}.txt'
+model_save_path = f'./{MODELS_FOLDER}/{TARGET}/lgb3_{str(TARGET)}.txt'
+saved_path = f'./weights/lgb3_Obj 7 Linked_pos_weight_3_25.txt'
 
 # Use LSTM
 use_lstm = False
@@ -89,3 +91,7 @@ lstm_config = {'optimizer': tf.keras.optimizers.SGD(learning_rate=0.01),
 # use these features for testing
 test_fe_names = ['MIDPRICE_60', 'KAMA_100', 'EMA_60', 'MIDPRICE_100', 'ISA_9', 'T3_100', 'EMA_100', 'ISB_26', 'MOM_5', 'HT_DCPHASE', 'AROON_down_15', 'LINEARREG_ANGLE_15', 'high_VAR_30', 'high_VAR_60', 'open_VAR_15', 'AROONOSC_14', 'NATR_30', 'close_VAR_15', 'high_VAR_100', 'ADX_15', 'low_VAR_15', 'ULTOSC_30', 'WILLR_30', 'open_VAR_60', 'AROON_down_30', 'close_VAR_60', 'open_VAR_30', 'open_VAR_100', 'CCI_30', 'close_VAR_100', 'close_VAR_30', 'low_VAR_60', 'NATR_15', 'low_VAR_100', 'ROCP_15', 'low_VAR_30', 'ULTOSC_60', 'DMP_14', 'COPC_11_14_10', 'ADX_30', 'MFI_14', 'RSI_15', 'high_STDDEV_15', 'CCI_60', 'Volume USDT', 'AROON_up_30', 'NATR_5', 'WILLR_60', 'high_STDDEV_5', 'ULTOSC_100', 'high_STDDEV_30', 'close_STDDEV_15', 'open_STDDEV_15', 'open_STDDEV_5', 'close_STDDEV_5',
                  'low_STDDEV_5', 'AROON_up_60', 'LINEARREG_ANGLE_30', 'TSI_13_25_13', 'low_STDDEV_15', 'ROCP_30', 'CCI_100', 'LINEARREG_ANGLE_60', 'TRUERANGE_1', 'close_STDDEV_30', 'open_STDDEV_30', 'high_STDDEV_60', 'WILLR_100', 'TSIs_13_25_13', 'AROON_up_100', 'low_STDDEV_30', 'MOM_15', 'RSI_30', 'close_STDDEV_60', 'open_STDDEV_60', 'high_STDDEV_100', 'ROCP_60', 'low_STDDEV_60', 'ATR_5', 'LINEARREG_ANGLE_100', 'close_STDDEV_100', 'open_STDDEV_100', 'BEARP_13', 'CUMLOGRET_1', 'low_STDDEV_100', 'ATRr_14', 'ATR_15', 'CHOP_14_1_100', 'MOM_30', 'ROCP_100', 'ATR_30', 'MASSI_9_25', 'low_macd', 'RSI_60', 'low_macdsignal', 'open_macd', 'close_macd', 'ATR_60', 'DMN_14', 'open_macdsignal', 'close_macdsignal', 'high_macd', 'ATR_100', 'high_macdsignal', 'MOM_60', 'RSI_100', 'OBV', 'MOM_100', 'Volume BTC', 'AD']
+
+# for blending models on test and validation data
+models_path_list = get_models_path(f'./{MODELS_FOLDER}/{TARGET}', [f'{TARGET}'])
+mode = 'mean'
