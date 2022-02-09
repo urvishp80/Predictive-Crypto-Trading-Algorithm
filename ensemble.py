@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
+import os
 import logging
 from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 # import pickle
+import time
 from sklearn.metrics import roc_auc_score, f1_score, precision_score, recall_score, accuracy_score
 
 import config
@@ -94,6 +96,9 @@ if __name__ == '__main__':
         predictions = model.predict(features)
         df[f'Predictions_{i}'] = list(range(config.n_context)) + predictions.tolist()
         df[f'Class_{i}'] = list(range(config.n_context)) + np.round(predictions).tolist()
+        log.info(f'Model name {config.models_path_list[i]}')
+        log.info(f"Column name Predictions_{i} and Class_{i}")
+        log.info(f"{df[f'Class_{i}'].iloc[20:].value_counts()}")
 
         test_preds.append(predictions.reshape(-1, 1))
 
@@ -106,4 +111,6 @@ if __name__ == '__main__':
     df['Ensemble_median_class'] = list(range(config.n_context)) + np.round(median_preds).tolist()
 
     print(df.head())
-    df.to_csv(f"./data/btc_predictions_{config.TARGET}_ensemble.csv", index=False)
+    df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+    os.makedirs(f'./data/{config.TARGET}', exist_ok=True)
+    df.to_csv(f"./data/{config.TARGET}/btc_predictions_{config.TARGET}_ensemble_{str(time.time())}.csv", index=False)
