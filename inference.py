@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import logging
 from sklearn.preprocessing import StandardScaler
+import os
+import time
 import tensorflow as tf
 import pickle
 
@@ -53,4 +55,6 @@ if __name__ == '__main__':
     df['Class'] = list(range(config.n_context)) + np.round(predictions).tolist()
 
     print(df.head())
-    df.to_csv(f"./data/btc_predictions_{config.TARGET}_{config.saved_path.split('/')[-1][:-4]}.csv", index=False)
+    df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+    os.makedirs(f'./data/{config.TARGET}', exist_ok=True)
+    df.to_csv(f"./data/{config.TARGET}/btc_predictions_{config.TARGET}_{str(time.time())}.csv", index=False)
