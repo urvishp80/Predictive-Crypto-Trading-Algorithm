@@ -15,10 +15,10 @@ TEST_DATA_PATH = os.path.join(DATA_FOLDER, TEST_DATA)
 TEST_DROP_COLS = ['unix']
 
 # target definition and columns to drop
-TARGET = 'Obj 5 Linked'
+TARGET = 'Obj 4 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
                  'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 3 Linked',
-                 'Obj 4 Linked', 'Obj 6 Linked', 'Obj 8 Linked', 'Obj 1 Linked', 'Obj 7 Linked']
+                 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 8 Linked', 'Obj 1 Linked', 'Obj 7 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
@@ -57,9 +57,9 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'metric': ['auc'],
                     'n_jobs': -1,
                     'force_col_wise': True,
-                    # 'is_unbalance': True,
+                    'is_unbalance': True,
                     # 'tree_learner': 'voting',
-                    'scale_pos_weight': 1.85
+                    # 'scale_pos_weight': 1.85
                     }
 
 # training parameters
@@ -93,7 +93,7 @@ test_fe_names = ['BEARP_13', 'AROON_up_30', 'ROCP_100', 'open_VAR_30', 'low_VAR_
                  'BBANDS_middle_100', 'MIDPRICE_5', 'EMA_5', 'KAMA_5', 'ITS_9', 'BBANDS_upper_100', 'BBANDS_upper_5', 'BBANDS_upper_30', 'BBANDS_upper_15', 'BBANDS_upper_60', 'SAR', 'KAMA_10_2_30', 'DCM_10_15', 'MIDPRICE_15', 'KAMA_15', 'HT_TRENDLINE', 'CKSPl_10_3_20', 'T3_30', 'EMA_15', 'ALMA_10_6.0_0.85', 'DCU_10_15', 'IKS_26', 'MIDPRICE_30', 'KAMA_30', 'EMA_30', 'T3_60', 'MIDPRICE_60', 'KAMA_60', 'ICS_26', 'KAMA_100', 'CKSPs_10_3_20', 'MIDPRICE_100', 'EMA_60', 'EMA_100', 'T3_100', 'open_STDDEV_100', 'ISA_9', 'ISB_26', 'RSI_60', 'ATR_5', 'low_STDDEV_100', 'low_VAR_15', 'Volume USDT', 'MOM_30', 'ATRr_14', 'low_macd', 'ATR_15', 'MOM_60', 'RSI_100', 'close_macd', 'open_macd', 'MOM_100', 'low_macdsignal', 'ATR_30', 'high_macd', 'close_macdsignal', 'open_macdsignal', 'AROON_up_60', 'high_macdsignal', 'DMN_14', 'ATR_60', 'ADX_30', 'ATR_100', 'CUMLOGRET_1', 'AROON_up_100', 'ADX_15', 'MASSI_9_25', 'OBV', 'Volume BTC', 'AD']
 
 # for blending models on test and validation data
-ensemble = True
+ensemble = False
 if ensemble:
     models_path_list = get_models_path(
         f'./{MODELS_FOLDER}/{TARGET}', [f'{TARGET}'])

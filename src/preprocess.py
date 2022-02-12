@@ -68,14 +68,14 @@ def create_balanced_data(features, targets):
     positive_indices = np.argwhere(targets)[:, 0]
     negative_indices = np.argwhere(targets == 0)[:, 0]
 
-    total_pos_samples = len(positive_indices) + 90000
+    total_pos_samples = len(positive_indices)
     if len(positive_indices) < len(negative_indices):
         negative_indices = negative_indices[-total_pos_samples:]
 
     sorted_indices = []
     for i, v in enumerate(positive_indices):
-        sorted_indices.append(v)
         sorted_indices.append(negative_indices[i])
+        sorted_indices.append(v)
     all_indices = np.concatenate((positive_indices, negative_indices), axis=0)
     np.random.shuffle(all_indices)
     return features[all_indices], targets[all_indices]
