@@ -43,7 +43,7 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'min_data_in_leaf': 500,
                     'min_gain_to_split': 0.1,
                     'lambda_l1': 0.01,
-                    'lambda_l2': 0.001,
+                    'lambda_l2': 0,
                     'max_bin': 1024,
                     'max_depth': -1,
                     'objective': 'binary',
@@ -57,9 +57,9 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'metric': ['auc'],
                     'n_jobs': -1,
                     'force_col_wise': True,
-                    'is_unbalance': True,
+                    # 'is_unbalance': True,
                     # 'tree_learner': 'voting',
-                    # 'scale_pos_weight': 1.85
+                    'scale_pos_weight': 1.45
                     }
 
 # training parameters
