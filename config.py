@@ -15,9 +15,9 @@ TEST_DATA_PATH = os.path.join(DATA_FOLDER, TEST_DATA)
 TEST_DROP_COLS = ['unix']
 
 # target definition and columns to drop
-TARGET = 'Obj 4 Linked'
+TARGET = 'Obj 3 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
-                 'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 3 Linked',
+                 'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 4 Linked',
                  'Obj 5 Linked', 'Obj 6 Linked', 'Obj 8 Linked', 'Obj 1 Linked', 'Obj 7 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
@@ -34,8 +34,8 @@ fe_threshold = 0.3
 SPLIT_DATE = pd.to_datetime(pd.Series(['2021/09/30']), format='%Y/%m/%d')
 
 # model parameters
-model_parameters = {'num_leaves': 2 ** 7,
-                    'learning_rate': 0.05,
+model_parameters = {'num_leaves': 2**7,
+                    'learning_rate': 0.024,
                     'bagging_fraction': 0.7,
                     'bagging_freq': 10,
                     'feature_fraction': 0.4,
@@ -44,7 +44,7 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'min_gain_to_split': 0.1,
                     'lambda_l1': 0.01,
                     'lambda_l2': 0,
-                    'max_bin': 1024,
+                    'max_bin': 512,
                     'max_depth': -1,
                     'objective': 'binary',
                     'seed': None,
@@ -59,7 +59,7 @@ model_parameters = {'num_leaves': 2 ** 7,
                     'force_col_wise': True,
                     # 'is_unbalance': True,
                     # 'tree_learner': 'voting',
-                    'scale_pos_weight': 1.35
+                    'scale_pos_weight': 1.75
                     }
 
 # training parameters
@@ -89,13 +89,12 @@ lstm_config = {'optimizer': tf.keras.optimizers.SGD(learning_rate=0.01),
                }
 
 # use these features for testing
-test_fe_names = ['close_VAR_30', 'low_VAR_15', 'ROCP_60', 'open_VAR_100', 'LINEARREG_ANGLE_100', 'close_VAR_100', 'TSIs_13_25_13', 'low_VAR_100', 'ATR_5', 'RSI_60', 'low_VAR_30', 'TSF_60', 'DEMA_30', 'TSF_30', 'T3_15', 'DEMA_60', 'TSF_100', 'DEMA_15', 'TSF_15', 'T3_5', 'BBANDS_lower_15', 'BBANDS_lower_5', 'BBANDS_lower_60', 'BBANDS_lower_100', 'BBANDS_lower_30', 'DCL_10_15', 'low', 'DEMA_100', 'SAR', 'TSF_5', 'open', 'TYPPRICE', 'CUMPCTRET_1', 'MIDPRICE_5', 'DEMA_5', 'HMA_10', 'BBANDS_middle_100', 'BBANDS_middle_5', 'BBANDS_middle_15', 'BBANDS_middle_30', 'BBANDS_middle_60', 'close', 'EMA_5', 'high', 'KAMA_5', 'ITS_9', 'KAMA_10_2_30', 'BBANDS_upper_60', 'BBANDS_upper_30', 'BBANDS_upper_100', 'BBANDS_upper_15',
-                 'BBANDS_upper_5', 'DCM_10_15', 'CKSPl_10_3_20', 'MIDPRICE_15', 'ALMA_10_6.0_0.85', 'HT_TRENDLINE', 'KAMA_15', 'EMA_15', 'DCU_10_15', 'T3_30', 'IKS_26',
-                 'MIDPRICE_30', 'KAMA_30', 'EMA_30', 'T3_60', 'ICS_26', 'MIDPRICE_60', 'KAMA_60', 'high_STDDEV_100', 'CKSPs_10_3_20', 'KAMA_100', 'MIDPRICE_100', 'EMA_60', 'EMA_100', 'T3_100', 'ISA_9', 'ISB_26', 'MOM_30', 'close_STDDEV_100', 'low_macd', 'open_STDDEV_100', 'low_STDDEV_100', 'Volume USDT', 'LINEARREG_ANGLE_60', 'close_macd', 'RSI_100', 'MOM_60', 'open_macd', 'ATRr_14', 'MOM_100', 'ATR_15', 'high_macd', 'low_macdsignal', 'close_macdsignal', 'DMN_14', 'open_macdsignal', 'ATR_30', 'ADX_30', 'high_macdsignal', 'AROON_up_60', 'ATR_60', 'CUMLOGRET_1', 'ATR_100', 'ADX_15', 'AROON_up_100', 'OBV', 'MASSI_9_25',
-                 'Volume BTC', 'AD']
+test_fe_names = ['close_VAR_100', 'close_VAR_60', 'low_VAR_100', 'LINEARREG_ANGLE_60', 'low_VAR_60', 'low_macd', 'NATR_15', 'ATRr_14', 'ADX_5', 'ATR_15', 'high_VAR_15', 'MOM_60', 'high_VAR_30', 'RSI_100', 'close_macd', 'DEMA_60', 'T3_15', 'TSF_100', 'TSF_60', 'DEMA_30', 'TSF_30', 'DEMA_100', 'DEMA_15', 'SAR', 'T3_5', 'TSF_15', 'T3_30', 'high', 'MIDPRICE_5', 'TYPPRICE', 'HMA_10', 'CKSPl_10_3_20', 'open', 'BBANDS_lower_100', 'BBANDS_lower_5', 'BBANDS_lower_30', 'BBANDS_lower_15', 'BBANDS_lower_60', 'BBANDS_upper_5', 'BBANDS_upper_15', 'BBANDS_upper_100', 'BBANDS_upper_30', 'BBANDS_upper_60', 'BBANDS_middle_15', 'BBANDS_middle_60', 'BBANDS_middle_100', 'BBANDS_middle_30', 'BBANDS_middle_5', 'DEMA_5', 'TSF_5', 'CUMPCTRET_1',
+                 'low', 'ITS_9', 'HT_TRENDLINE', 'close', 'EMA_5', 'DCL_10_15', 'KAMA_10_2_30', 'KAMA_5', 'DCM_10_15', 'DCU_10_15', 'MIDPRICE_15', 'ALMA_10_6.0_0.85', 'KAMA_15', 'IKS_26', 'MIDPRICE_30', 'EMA_15', 'T3_60', 'KAMA_30', 'EMA_30', 'MIDPRICE_60', 'KAMA_100', 'MIDPRICE_100', 'KAMA_60', 'T3_100', 'EMA_60', 'CKSPs_10_3_20', 'EMA_100', 'ICS_26', 'ISA_9', 'ISB_26', 'open_macd', 'open_VAR_30', 'close_VAR_30', 'close_VAR_15', 'DMN_14', 'open_VAR_15', 'low_macdsignal', 'ATR_30', 'high_macd', 'MOM_100', 'low_VAR_15', 'low_VAR_30', 'close_macdsignal', 'open_macdsignal', 'NATR_5', 'high_macdsignal', 'ATR_60', 'ATR_100', 'AROON_up_60', 'Volume USDT', 'CUMLOGRET_1', 'ADX_30', 'AROON_up_100', 'ADX_15', 'OBV', 'MASSI_9_25', 'Volume BTC', 'AD']
 
 # for blending models on test and validation data
 ensemble = False
+
 if ensemble:
     models_path_list = get_models_path(
         f'./{MODELS_FOLDER}/{TARGET}', [f'{TARGET}'])
