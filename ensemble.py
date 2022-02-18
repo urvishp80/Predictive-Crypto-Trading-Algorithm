@@ -16,7 +16,7 @@ from src.indicators import get_indicators, get_price_patterns, get_additional_in
 from src.logger import setup_logger
 from src.models import BiLSTMModel, LightGBMModel, evaluate
 
-log = setup_logger(out_file=f'./logs/{config.TARGET}_ensemble_logs.txt', stderr_level=logging.INFO)
+log = setup_logger(out_file=f'./logs/{config.TARGET}_ensemble_logs_{str(time.time())}.txt', stderr_level=logging.INFO)
 scaler = StandardScaler()
 
 
@@ -31,12 +31,12 @@ def evaluate_validation_data(model, j, valid_feat, valid_targets):
 
 
 if __name__ == '__main__':
-    log.info("Doing model predictions and testing on validation data overall.")
-    log.info("Loading validation data.")
-    valid_feat = np.load('./data/valid_feat.npy')
-    valid_targets = np.load('./data/valid_targets.npy')
+    # log.info("Doing model predictions and testing on validation data overall.")
+    # log.info("Loading validation data.")
+    # valid_feat = np.load('./data/valid_feat.npy')
+    # valid_targets = np.load('./data/valid_targets.npy')
 
-    valid_preds = []
+    # valid_preds = []
     models = []
     log.info(f"Loading models {config.models_path_list}.")
     for i, path in enumerate(config.models_path_list):
@@ -44,30 +44,31 @@ if __name__ == '__main__':
         model = model.load(path)
         models.append(model)
 
-        preds = evaluate_validation_data(model, i, valid_feat, valid_targets)
-        valid_preds.append(preds.reshape(-1, 1))
+    #     preds = evaluate_validation_data(model, i, valid_feat, valid_targets)
+    #     valid_preds.append(preds.reshape(-1, 1))
 
-    preds = np.concatenate(valid_preds, axis=1)
-    if config.mode == 'mean':
-        preds = preds.mean(axis=1)
-    else:
-        preds = np.median(preds, axis=1)
+    # preds = np.concatenate(valid_preds, axis=1)
+    # if config.mode == 'mean':
+    #     preds = preds.mean(axis=1)
+    # else:
+    #     preds = np.median(preds, axis=1)
 
-    auc = roc_auc_score(valid_targets, preds)
-    acc = accuracy_score(valid_targets, np.round(preds))
-    f1 = f1_score(valid_targets, np.round(preds), average='binary')
-    precision = precision_score(valid_targets, np.round(preds), average='binary')
-    recall = recall_score(valid_targets, np.round(preds), average='binary')
+    # auc = roc_auc_score(valid_targets, preds)
+    # acc = accuracy_score(valid_targets, np.round(preds))
+    # f1 = f1_score(valid_targets, np.round(preds), average='binary')
+    # precision = precision_score(valid_targets, np.round(preds), average='binary')
+    # recall = recall_score(valid_targets, np.round(preds), average='binary')
 
-    log.info("Overall performance on validation data for blending.")
-    log.info(f"AUC score of model is {round(auc, 4)}.")
-    log.info(f"Accuracy score of model is {round(acc, 4)}.")
-    log.info(f"F1 score of model is {round(f1, 4)}.")
-    log.info(f"Precision score is {round(precision, 4)}.")
-    log.info(f"Recall score is {round(recall, 4)}")
+    # log.info("Overall performance on validation data for blending.")
+    # log.info(f"AUC score of model is {round(auc, 4)}.")
+    # log.info(f"Accuracy score of model is {round(acc, 4)}.")
+    # log.info(f"F1 score of model is {round(f1, 4)}.")
+    # log.info(f"Precision score is {round(precision, 4)}.")
+    # log.info(f"Recall score is {round(recall, 4)}")
 
     log.info("Starting test data reading.")
     df = get_data(config.TEST_DATA_PATH, drop_col=config.TEST_DROP_COLS)
+    print(df.head())
     log.info("Getting indicator for data.")
     df_indicators = get_indicators(df, intervals=config.INTERVALS)
     log.info("Getting price pattern for data.")
@@ -86,14 +87,17 @@ if __name__ == '__main__':
     log.info("Getting features and targets for training data.")
     features, _ = get_features_targets(data, None, features_names, date_col='Date')
     log.info(f"Shape of test features: {features.shape}")
+    features_names = features.columns.tolist() * config.n_context
 
     features = features.values
-    features, _ = create_flatten_features(features, None, config.n_context, features_names)
+    features, _, fe_list = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=True)
     log.info(f"Shape of test features: {features.shape}.")
 
     test_preds = []
     for i, model in enumerate(models):
         predictions = model.predict(features)
+        fe_df = pd.DataFrame({'Value': model.feature_importance(), 'Feature': fe_list}).sort_values(by="Value", ascending=False)
+        fe_df.to_csv(f"./data/{config.TARGET}/feature_importance_{config.TARGET}_model_{i}.csv", index=False)
         df[f'Predictions_{i}'] = list(range(config.n_context)) + predictions.tolist()
         df[f'Class_{i}'] = list(range(config.n_context)) + np.round(predictions).tolist()
         log.info(f'Model name {config.models_path_list[i]}')

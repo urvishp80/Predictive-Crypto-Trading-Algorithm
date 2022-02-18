@@ -119,12 +119,18 @@ def create_lstm_features(data, targets, n_context, features_names):
     return all_features, all_targets
 
 
-def create_flatten_features(data, targets, n_context, features_names):
+def create_flatten_features(data, targets, n_context, features_names, return_fe_list=False):
     features = data
     features[np.isnan(features)] = 0
     print(features.shape, len(features))
     all_features = []
     all_targets = []
+    all_fe_names = []
+
+    if return_fe_list:
+        for i, name in enumerate(features_names):
+            prev_min = i % (len(features_names) // n_context)
+            all_fe_names.append(f"{name}_{prev_min}")
 
     for i in tqdm(range(n_context, len(features))):
         data_slice = features[i - n_context: i, :].reshape(1, -1)
@@ -135,6 +141,8 @@ def create_flatten_features(data, targets, n_context, features_names):
     all_features = np.squeeze(np.asarray(all_features))
     if targets is not None:
         all_targets = np.asarray(all_targets)
+    if return_fe_list:
+        return all_features, all_targets, all_fe_names
     return all_features, all_targets
 
 

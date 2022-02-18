@@ -17,8 +17,8 @@ TEST_DROP_COLS = ['unix']
 # target definition and columns to drop
 TARGET = 'Obj 3 Linked'
 OTHER_TARGETS = ['Objective 2', 'Objective 3', 'Objective 4', 'Objective 5', 'Objective 6',
-                 'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 4 Linked',
-                 'Obj 5 Linked', 'Obj 6 Linked', 'Obj 8 Linked', 'Obj 1 Linked', 'Obj 7 Linked']
+                 'Objective 7', 'Objective 8', 'Objective 1', 'Obj 2 Linked', 'Obj 5 Linked',
+                 'Obj 7 Linked', 'Obj 8 Linked', 'Obj 4 Linked', 'Obj 1 Linked', 'Obj 6 Linked']
 DROP_COLS = ['unix'] + OTHER_TARGETS
 
 # features and indicators
@@ -93,7 +93,7 @@ test_fe_names = ['close_VAR_100', 'close_VAR_60', 'low_VAR_100', 'LINEARREG_ANGL
                  'low', 'ITS_9', 'HT_TRENDLINE', 'close', 'EMA_5', 'DCL_10_15', 'KAMA_10_2_30', 'KAMA_5', 'DCM_10_15', 'DCU_10_15', 'MIDPRICE_15', 'ALMA_10_6.0_0.85', 'KAMA_15', 'IKS_26', 'MIDPRICE_30', 'EMA_15', 'T3_60', 'KAMA_30', 'EMA_30', 'MIDPRICE_60', 'KAMA_100', 'MIDPRICE_100', 'KAMA_60', 'T3_100', 'EMA_60', 'CKSPs_10_3_20', 'EMA_100', 'ICS_26', 'ISA_9', 'ISB_26', 'open_macd', 'open_VAR_30', 'close_VAR_30', 'close_VAR_15', 'DMN_14', 'open_VAR_15', 'low_macdsignal', 'ATR_30', 'high_macd', 'MOM_100', 'low_VAR_15', 'low_VAR_30', 'close_macdsignal', 'open_macdsignal', 'NATR_5', 'high_macdsignal', 'ATR_60', 'ATR_100', 'AROON_up_60', 'Volume USDT', 'CUMLOGRET_1', 'ADX_30', 'AROON_up_100', 'ADX_15', 'OBV', 'MASSI_9_25', 'Volume BTC', 'AD']
 
 # for blending models on test and validation data
-ensemble = False
+ensemble = True
 
 if ensemble:
     models_path_list = get_models_path(
