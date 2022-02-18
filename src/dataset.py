@@ -122,7 +122,6 @@ def create_lstm_features(data, targets, n_context, features_names):
 def create_flatten_features(data, targets, n_context, features_names, return_fe_list=False):
     features = data
     features[np.isnan(features)] = 0
-    print(features.shape, len(features))
     all_features = []
     all_targets = []
     all_fe_names = []
