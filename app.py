@@ -28,11 +28,11 @@ def load_binary_score_models():
     model = LightGBMModel(config.model_parameters, config.fit_parameters, config, inference=False)
 
     for key, value in config.objectives_to_run.items():
+        obj_models = []
         if value:
-            obj_models = []
             models_name_list = models_full_list[key]["binary_score"]
             for i in models_name_list:
-                m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), i))
+                m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), f"{i}.txt"))
                 obj_models.append(m)
         models_dir[key] = obj_models
     return models_dir
@@ -48,11 +48,11 @@ def load_trading_score_models():
     model = LightGBMModel(config.model_parameters, config.fit_parameters, config, inference=False)
 
     for key, value in config.objectives_to_run.items():
+        obj_models = []
         if value:
-            obj_models = []
             models_name_list = models_full_list[key]["trading_score"]
             for i in models_name_list:
-                m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), i))
+                m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), f"{i}.txt"))
                 obj_models.append(m)
         models_dir[key] = obj_models
     return models_dir
@@ -69,7 +69,7 @@ def getPredictions():
     try:
         data = request.json
         if_binary = data["is_binary"]
-        df = pd.DataFrame.from_dict(data["data"], orient='table')
+        df = pd.DataFrame.from_dict(data["data"])
         if if_binary:
             preds = predict_single(df, binary_score_models_dir)
         else:

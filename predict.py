@@ -1,7 +1,7 @@
 import numpy as np
-import os
-import time
+import pandas as pd
 import logging
+from tqdm import tqdm
 
 import config
 from src.dataset import get_data, get_features_targets, merge_data, create_flatten_features
@@ -21,7 +21,9 @@ def predict_single(df, models_dir):
     preds_dict = {}
 
     log.info("Starting test data reading.")
-    df = get_data(config.TEST_DATA_PATH, drop_col=config.TEST_DROP_COLS)
+    df['Date'] = pd.to_datetime(df['unix'], unit='ms')
+    df = df.sort_values(by='Date', ascending=True).reset_index(drop=True)
+    df = df.drop(config.TEST_DROP_COLS, axis=1)
     log.info("Getting indicator for data.")
     df_indicators = get_indicators(df, intervals=config.INTERVALS)
     log.info("Getting price pattern for data.")
@@ -31,8 +33,8 @@ def predict_single(df, models_dir):
     log.info("Merging all data into one.")
     data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators, test=True)
 
-    for key, models in models_dir:
-        features_names = config.prod_features[f'{key}']
+    for key, models in models_dir.items():
+        features_names = config.prod_features[key]
         features, _ = get_features_targets(data, None, features_names, date_col='Date')
         log.info(f"Shape of test features: {features.shape}")
 
@@ -40,7 +42,7 @@ def predict_single(df, models_dir):
         features, _ = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=False)
         log.info(f"Shape of test features: {features.shape}.")
         single_preds = {}
-        for i, model in models:
+        for i, model in tqdm(enumerate(models)):
             pred = model.predict(features)
             single_preds['prediction'] = {'preds': pred, 'class': np.round(pred)}
         preds_dict[key] = single_preds

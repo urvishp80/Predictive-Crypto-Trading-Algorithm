@@ -59,14 +59,14 @@ def split_data(df, date):
 
 def merge_data(data, indicators, price_patterns, additional_indicators=None, test=False):
     if additional_indicators is not None:
-        data = pd.concat((data, indicators.shift(), price_patterns.shift(), additional_indicators.shift()), axis=1) #.fillna(method='bfill').fillna(method='ffill')
+        data = pd.concat((data, indicators.shift(), price_patterns.shift(), additional_indicators.shift()), axis=1)  #.fillna(method='bfill').fillna(method='ffill')
         if test:
             data = data.dropna(subset=['Date'])
         else:
             data = data.dropna(subset=['Date', config.TARGET])
         return data.fillna(0)
     else:
-        data = pd.concat((data, indicators.shift(), price_patterns.shift()), axis=1) #.fillna(0)
+        data = pd.concat((data, indicators.shift(), price_patterns.shift()), axis=1)  #.fillna(0)
         if test:
             data = data.dropna(subset=['Date'])
         else:
