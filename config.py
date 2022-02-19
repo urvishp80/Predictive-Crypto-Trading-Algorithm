@@ -118,7 +118,7 @@ prod_features = {'obj5': ['BEARP_13', 'AROON_up_30', 'ROCP_100', 'open_VAR_30', 
 
 
 # objectives to run on
-objectives_to_run = {'obj5': True, 'obj6': True, 'obj7': True, 'obj8': True}
+objectives_to_run = {'obj5': False, 'obj6': False, 'obj7': True, 'obj8': True}
 
 # models dir
 PROD_MODELS_DIR = './models'

@@ -33,18 +33,18 @@ def predict_single(df, models_dir):
     log.info("Merging all data into one.")
     data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators, test=True)
 
-    for key, models in models_dir.items():
-        features_names = config.prod_features[key]
-        features, _ = get_features_targets(data, None, features_names, date_col='Date')
-        log.info(f"Shape of test features: {features.shape}")
+    for key, models_dict in models_dir.items():
+        obj_predictions = {}
+        for obj_name, obj_models_list in models_dict.items():
+            features_names = config.prod_features[obj_name]
+            features, _ = get_features_targets(data, None, features_names, date_col='Date')
 
-        features = features.values
-        features, _ = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=False)
-        log.info(f"Shape of test features: {features.shape}.")
-        single_preds = {}
-        for i, model in tqdm(enumerate(models)):
-            pred = model.predict(features)
-            single_preds['prediction'] = {'preds': pred, 'class': np.round(pred)}
-        preds_dict[key] = single_preds
-
+            features = features.values
+            features, _ = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=False)
+            models_preds = []
+            for i, model in tqdm(enumerate(obj_models_list)):
+                pred = model.predict(features)
+                models_preds.append((pred.tolist(), np.round(pred).tolist()))
+            obj_predictions[obj_name] = models_preds
+        preds_dict[key] = obj_predictions
     return preds_dict
