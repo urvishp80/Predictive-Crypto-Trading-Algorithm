@@ -23,6 +23,8 @@ def predict_single(df, models_dir):
     log.info("Starting test data reading.")
     df['Date'] = pd.to_datetime(df['unix'], unit='ms')
     df = df.sort_values(by='Date', ascending=True).reset_index(drop=True)
+    df = df.resample('1Min', on='Date').mean().dropna()
+    df['Date'] = df.index
     df = df.drop(config.TEST_DROP_COLS, axis=1)
     log.info("Getting indicator for data.")
     df_indicators = get_indicators(df, intervals=config.INTERVALS)
