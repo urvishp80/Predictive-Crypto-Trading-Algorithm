@@ -6,7 +6,7 @@ matplotlib==3.4.3
 seaborn==0.11.1
 numpy
 tqdm
-TA-Lib==0.4.24
+ta-lib
 scikit_learn==1.0.2
 tensorflow==2.4.1
 Flask==2.0.2
