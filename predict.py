@@ -11,7 +11,7 @@ from src.logger import setup_logger
 log = setup_logger(stderr_level=logging.INFO)
 
 
-def predict_single(df, models_dir):
+def predict_single_objective(df, models_dir):
     """A simple function to get the prediction for current one minute.
 
     Args:
@@ -35,18 +35,42 @@ def predict_single(df, models_dir):
     log.info("Merging all data into one.")
     data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators, test=True)
 
-    for key, models_dict in models_dir.items():
-        obj_predictions = {}
-        for obj_name, obj_models_list in models_dict.items():
-            features_names = config.prod_features[obj_name]
-            features, _ = get_features_targets(data, None, features_names, date_col='Date')
+    for key, model_list in models_dir.items():
+        features_names = config.prod_features[key]
+        features, _ = get_features_targets(data, None, features_names, date_col='Date')
 
-            features = features.values
-            features, _ = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=False)
-            models_preds = []
-            for i, model in tqdm(enumerate(obj_models_list)):
-                pred = model.predict(features)
-                models_preds.append((pred.tolist(), np.round(pred).tolist()))
-            obj_predictions[obj_name] = models_preds
+        features = features.values
+        features, _ = create_flatten_features(features, None, config.n_context, features_names, return_fe_list=False)
+
+        obj_predictions = {}
+        if len(model_list) >= 1:
+            for model_name, model in model_list:
+                pred = model.predict(features[-200:])
+                obj_predictions[model_name] = (pred.tolist(), np.round(pred).tolist())
         preds_dict[key] = obj_predictions
     return preds_dict
+
+
+def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
+    mapped_preds = {}
+    for key, models_dict in model_mapping.items():
+        obj_predictions = {}
+        if if_binary:
+            models_dict = models_dict["binary_score"]
+            for obj_models_list in models_dict:
+                for obj_name, model_names in obj_models_list.items():
+                    models_preds = []
+                    for model in model_names:
+                        models_preds.append(preds_dict[obj_name][model])
+                    obj_predictions[obj_name] = models_preds
+            mapped_preds[key] = obj_predictions
+        else:
+            models_dict = models_dict["trading_score"]
+            for obj_models_list in models_dict:
+                for obj_name, model_names in obj_models_list.items():
+                    models_preds = []
+                    for model in model_names:
+                        models_preds.append(preds_dict[obj_name][model])
+                    obj_predictions[obj_name] = models_preds
+            mapped_preds[key] = obj_predictions
+    return mapped_preds
