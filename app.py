@@ -17,8 +17,12 @@ log = setup_logger(stderr_level=logging.INFO)
 
 app = Flask(__name__)
 
+# gloabal variable to store models and their mapping with names
 binary_score_models_dir = None
 trading_score_models_dir = None
+
+# global variable to store previous 300 min data
+cache = {}
 
 
 def create_model_map(is_binary):
@@ -89,7 +93,21 @@ def getPredictions():
     try:
         data = request.json
         if_binary = data["is_binary"]
-        df = pd.DataFrame.from_dict(data["data"])
+        current_data = data["data"]
+
+        try:
+            prev_data_dict = cache["prev_data"]
+        except KeyError:
+            prev_data_dict = None
+
+        if prev_data_dict is None:
+            cache["prev_data"] = current_data
+            df = pd.DataFrame.from_dict(current_data)
+        else:
+            prev_data_dict.extend(current_data)
+            prev_data_dict.pop(0)
+            df = pd.DataFrame.from_dict(prev_data_dict)
+
         if if_binary.lower() == "true":
             log.info("Doing prediction for binary trading score.")
             preds = predict_single_objective(df, binary_score_models_dir)

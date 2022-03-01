@@ -45,7 +45,7 @@ def predict_single_objective(df, models_dir):
         obj_predictions = {}
         if len(model_list) >= 1:
             for model_name, model in model_list:
-                pred = model.predict(features[-200:])
+                pred = model.predict(features[-1:])
                 obj_predictions[model_name] = (pred.tolist(), np.round(pred).tolist())
         preds_dict[key] = obj_predictions
     return preds_dict
