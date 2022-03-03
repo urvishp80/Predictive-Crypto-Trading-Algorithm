@@ -38,19 +38,38 @@ def create_model_map(is_binary):
             models_map_dir[key] = []
 
     for key, value in config.objectives_to_run.items():
+        models_name_list = []
         if value:
             if is_binary:
-                models_name_list = models_full_list[key]["binary_score"]
+                try:
+                    binary_score_models = models_full_list[key]["binary_score"]
+                    models_name_list.extend(binary_score_models)
+                except KeyError:
+                    pass
+                try:
+                    martingale_return_models = models_full_list[key]["martingale_return"]
+                    models_name_list.extend(martingale_return_models)
+                except KeyError:
+                    pass
+                try:
+                    min_max_consecutive_losses_models = models_full_list[key]["min_max_consecutive_losses"]
+                    models_name_list.extend(min_max_consecutive_losses_models)
+                except KeyError:
+                    pass
+
                 for model_names in models_name_list:
                     for obj_name, obj_model_list in model_names.items():
-                        for i in obj_model_list:
+                        for v, i in obj_model_list:
                             if i not in models_map_dir[obj_name]:
                                 models_map_dir[obj_name].append(i)
             else:
-                models_name_list = models_full_list[key]["trading_score"]
+                try:
+                    models_name_list = models_full_list[key]["trading_score"]
+                except KeyError:
+                    pass
                 for model_names in models_name_list:
                     for obj_name, obj_model_list in model_names.items():
-                        for i in obj_model_list:
+                        for v, i in obj_model_list:
                             if i not in models_map_dir[obj_name]:
                                 models_map_dir[obj_name].append(i)
     return models_map_dir

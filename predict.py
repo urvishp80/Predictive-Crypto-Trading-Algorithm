@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 import logging
-from tqdm import tqdm
 
 import config
-from src.dataset import get_data, get_features_targets, merge_data, create_flatten_features
+from src.dataset import get_features_targets, merge_data, create_flatten_features
 from src.indicators import get_indicators, get_price_patterns, get_additional_indicators
 from src.logger import setup_logger
 
@@ -52,25 +51,37 @@ def predict_single_objective(df, models_dir):
 
 
 def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
+    print(preds_dict)
     mapped_preds = {}
     for key, models_dict in model_mapping.items():
-        obj_predictions = {}
+        score_type_preds = []
         if if_binary:
-            models_dict = models_dict["binary_score"]
-            for obj_models_list in models_dict:
-                for obj_name, model_names in obj_models_list.items():
-                    models_preds = []
-                    for model in model_names:
-                        models_preds.append(preds_dict[obj_name][model])
-                    obj_predictions[obj_name] = models_preds
-            mapped_preds[key] = obj_predictions
+            for score_type in ["binary_score", "min_max_consecutive_losses", "martingale_return"]:
+                obj_predictions = {}
+                try:
+                    models_name_list = models_dict[score_type]
+
+                    for obj_models_list in models_name_list:
+                        for obj_name, model_names in obj_models_list.items():
+                            models_preds = []
+                            for temp_name, model in model_names:
+                                models_preds.append({temp_name: preds_dict[obj_name][model]})
+                            obj_predictions[obj_name] = models_preds
+                    score_type_preds.append({score_type: obj_predictions})
+                except KeyError:
+                    pass
+            mapped_preds[key] = score_type_preds
         else:
-            models_dict = models_dict["trading_score"]
-            for obj_models_list in models_dict:
-                for obj_name, model_names in obj_models_list.items():
-                    models_preds = []
-                    for model in model_names:
-                        models_preds.append(preds_dict[obj_name][model])
-                    obj_predictions[obj_name] = models_preds
-            mapped_preds[key] = obj_predictions
+            try:
+                obj_predictions = {}
+                models_dict = models_dict["trading_score"]
+                for obj_models_list in models_dict:
+                    for obj_name, model_names in obj_models_list.items():
+                        models_preds = []
+                        for temp_name, model in model_names:
+                            models_preds.append({temp_name: preds_dict[obj_name][model]})
+                        obj_predictions[obj_name] = models_preds
+                mapped_preds[key] = {"trading_score": obj_predictions}
+            except KeyError:
+                pass
     return mapped_preds
