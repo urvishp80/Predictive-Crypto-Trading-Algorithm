@@ -8,7 +8,7 @@ import logging
 import config
 from src.models import LightGBMModel
 from predict import predict_single_objective, map_preds_to_model_names
-from prod_models_list import models_full_list
+from prod_models_list import models_full_list, binary_score_api_response, trading_score_api_response
 from src.logger import setup_logger
 
 # Ignore the warning
@@ -106,7 +106,6 @@ binary_score_models_dir = load_binary_score_models()
 trading_score_models_dir = load_trading_score_models()
 
 
-# get category of the app from play store
 @app.route('/api/predict', methods=['POST'])
 def getPredictions():
     try:
@@ -136,6 +135,22 @@ def getPredictions():
             preds = predict_single_objective(df, trading_score_models_dir)
             mapped_response = map_preds_to_model_names(preds, models_full_list, False)
         return mapped_response
+    except Exception as ex:
+        return Response(f"An error occurred. {ex}.", status=400)
+
+
+@app.route('/api/get_binary_score_response', methods=['GET'])
+def get_binary_api_response():
+    try:
+        return binary_score_api_response
+    except Exception as ex:
+        return Response(f"An error occurred. {ex}.", status=400)
+
+
+@app.route("/api/get_trading_score_response", methods=['GET'])
+def get_trading_score_response():
+    try:
+        return trading_score_api_response
     except Exception as ex:
         return Response(f"An error occurred. {ex}.", status=400)
 
