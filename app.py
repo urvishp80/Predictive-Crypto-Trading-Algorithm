@@ -4,6 +4,7 @@ import os
 from flask import Flask, request, Response
 from glob import glob
 import logging
+import time
 
 import config
 from src.models import LightGBMModel
@@ -109,6 +110,7 @@ trading_score_models_dir = load_trading_score_models()
 @app.route('/api/predict', methods=['POST'])
 def getPredictions():
     try:
+        start_time = time.time()
         data = request.json
         if_binary = data["is_binary"]
         current_data = data["data"]
@@ -134,6 +136,8 @@ def getPredictions():
             log.info("Doing prediction for trading score.")
             preds = predict_single_objective(df, trading_score_models_dir)
             mapped_response = map_preds_to_model_names(preds, models_full_list, False)
+        end_time = time.time()
+        log.info(f"time for request to get done {(end_time - start_time)}")
         return mapped_response
     except Exception as ex:
         return Response(f"An error occurred. {ex}.", status=400)

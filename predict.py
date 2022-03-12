@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import logging
+import time
 
 import config
 from src.dataset import get_features_targets, merge_data, create_flatten_features
@@ -19,6 +20,7 @@ def predict_single_objective(df, models_dir):
     """
     preds_dict = {}
 
+    start_time = time.time()
     log.info("Starting test data reading.")
     df['Date'] = pd.to_datetime(df['unix'], unit='ms')
     df = df.sort_values(by='Date', ascending=True).reset_index(drop=True)
@@ -33,7 +35,10 @@ def predict_single_objective(df, models_dir):
     df_add_indicators = get_additional_indicators(df)
     log.info("Merging all data into one.")
     data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators, test=True)
+    end_time = time.time()
+    log.info(f"time to make predictions. {(end_time - start_time)}")
 
+    start_time = time.time()
     for key, model_list in models_dir.items():
         features_names = config.prod_features[key]
         features, _ = get_features_targets(data, None, features_names, date_col='Date')
@@ -47,11 +52,12 @@ def predict_single_objective(df, models_dir):
                 pred = model.predict(features[-1:])
                 obj_predictions[model_name] = (pred.tolist(), np.round(pred).tolist())
         preds_dict[key] = obj_predictions
+    end_time = time.time()
+    log.info(f"time to make predictions. {(end_time - start_time)}")
     return preds_dict
 
 
 def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
-    print(preds_dict)
     mapped_preds = {}
     for key, models_dict in model_mapping.items():
         score_type_preds = []
