@@ -28,13 +28,11 @@ def predict_single_objective(df, models_dir):
     df['Date'] = df.index
     df = df.drop(config.TEST_DROP_COLS, axis=1)
     log.info("Getting indicator for data.")
-    df_indicators = get_indicators(df, intervals=config.INTERVALS)
-    log.info("Getting price pattern for data.")
-    df_price_pattern = get_price_patterns(df)
+    df_indicators = get_indicators(df, intervals=config.INTERVALS, PROD_MODE=True)
     log.info("Getting additional indicators.")
     df_add_indicators = get_additional_indicators(df)
     log.info("Merging all data into one.")
-    data = merge_data(df, df_indicators, df_price_pattern, df_add_indicators, test=True)
+    data = merge_data(df, df_indicators, df_add_indicators, test=True)
     end_time = time.time()
     log.info(f"time to make predictions. {(end_time - start_time)}")
 
