@@ -1,0 +1,159 @@
+import warnings
+import pandas as pd
+import os
+from flask import Flask, request, Response
+from glob import glob
+import logging
+import time
+
+import config
+from src.models import LightGBMModel
+from predict import predict_single_objective, map_preds_to_model_names
+from prod_models_list import models_full_list
+from src.logger import setup_logger
+
+# Ignore the warning
+warnings.simplefilter("ignore")
+log = setup_logger(stderr_level=logging.INFO)
+
+app = Flask(__name__)
+
+# gloabal variable to store models and their mapping with names
+binary_score_models_dir = None
+trading_score_models_dir = None
+
+# global variable to store previous 300 min data
+cache = {}
+
+
+def create_model_map(is_binary):
+    """Maps the models for production to simple dictionary for each objecive so we can later use it to load and do prediction.
+
+    Returns:
+        dict: dictionary with mapping of names for each objecive type and its models list.
+    """
+    models_map_dir = {}
+
+    for key, val in config.objectives_to_run.items():
+        if val:
+            models_map_dir[key] = []
+
+    for key, value in config.objectives_to_run.items():
+        models_name_list = []
+        if value:
+            if is_binary:
+                try:
+                    binary_score_models = models_full_list[key]["binary_score"]
+                    models_name_list.extend(binary_score_models)
+                except KeyError:
+                    pass
+                try:
+                    martingale_return_models = models_full_list[key]["martingale_return"]
+                    models_name_list.extend(martingale_return_models)
+                except KeyError:
+                    pass
+                try:
+                    min_max_consecutive_losses_models = models_full_list[key]["min_max_consecutive_losses"]
+                    models_name_list.extend(min_max_consecutive_losses_models)
+                except KeyError:
+                    pass
+
+                for model_names in models_name_list:
+                    for obj_name, obj_model_list in model_names.items():
+                        for v, i in obj_model_list:
+                            if i not in models_map_dir[obj_name]:
+                                models_map_dir[obj_name].append(i)
+            else:
+                try:
+                    models_name_list = models_full_list[key]["trading_score"]
+                except KeyError:
+                    pass
+                for model_names in models_name_list:
+                    for obj_name, obj_model_list in model_names.items():
+                        for v, i in obj_model_list:
+                            if i not in models_map_dir[obj_name]:
+                                models_map_dir[obj_name].append(i)
+    return models_map_dir
+
+
+def load_binary_score_models():
+    obj_wise_models_loaded = {}
+    obj_wise_models = create_model_map(True)
+    model = LightGBMModel(config.model_parameters, config.fit_parameters, config, inference=False)
+    for key, model_names in obj_wise_models.items():
+        loaded_model = []
+        for i in model_names:
+            m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), f"{i}.txt"))
+            loaded_model.append((i, m))
+        obj_wise_models_loaded[key] = loaded_model
+    return obj_wise_models_loaded
+
+
+def load_trading_score_models():
+    obj_wise_models_loaded = {}
+    obj_wise_models = create_model_map(False)
+    model = LightGBMModel(config.model_parameters, config.fit_parameters, config, inference=False)
+    for key, model_names in obj_wise_models.items():
+        loaded_model = []
+        for i in model_names:
+            m = model.load(os.path.join(os.path.join(config.PROD_MODELS_DIR, key), f"{i}.txt"))
+            loaded_model.append((i, m))
+        obj_wise_models_loaded[key] = loaded_model
+    return obj_wise_models_loaded
+
+
+# calling the load function as we need models loaded into memory as soon as the app starts.
+binary_score_models_dir = load_binary_score_models()
+trading_score_models_dir = load_trading_score_models()
+
+
+if __name__ == "__main__":
+    try:
+        if_binary = "True"
+        current_data = pd.read_json("./data/btc_usd_full_test_data.json", orient="table")
+        current_data['Date'] = pd.to_datetime(current_data['unix'], unit='ms')
+        print(current_data.head())
+        print(current_data.shape)
+
+        try:
+            prev_data_dict = cache["prev_data"]
+        except KeyError:
+            prev_data_dict = None
+
+        if prev_data_dict is None:
+            cache["prev_data"] = current_data
+            df = pd.DataFrame.from_dict(current_data)
+        else:
+            prev_data_dict.extend(current_data)
+            prev_data_dict.pop(0)
+            df = pd.DataFrame.from_dict(prev_data_dict)
+
+        if if_binary.lower() == "true":
+            log.info("Doing prediction for binary trading score.")
+            preds = predict_single_objective(df, binary_score_models_dir)
+            mapped_response = map_preds_to_model_names(preds, models_full_list, True)
+            for key, value in mapped_response.items():
+                df = current_data.iloc[20:]
+                for v in value:
+                    for j, p in v.items():
+                        df[f'{j}'] = p
+                df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+                df.to_csv(f"./data/jan_march_preds_{key}.csv", index=False)
+                print(df.head())
+                print(df.shape)
+        else:
+            log.info("Doing prediction for trading score.")
+            preds = predict_single_objective(df, trading_score_models_dir)
+            mapped_response = map_preds_to_model_names(preds, models_full_list, False)
+            for key, value in mapped_response.items():
+                df = current_data.iloc[20:]
+                for v in value:
+                    for j, p in v.items():
+                        df[f'{j}'] = p
+                df = df.sort_values(by='Date', ascending=False).reset_index(drop=True)
+                df.to_csv(f"./data/jan_march_preds_{key}.csv", index=False)
+                print(df.head())
+                print(df.shape)
+
+    except Exception as ex:
+        print(f"An error occurred. {ex}.")
