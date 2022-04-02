@@ -59,7 +59,7 @@ def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
     if if_binary:
         mapped_preds = {}
         for score_type in ["binary_score", "min_max_consecutive_losses", "martingale_return"]:
-            score_type_preds = []
+            score_type_preds = {}
             for key, models_dict in model_mapping.items():
                 try:
                     models_name_list = models_dict[score_type]
@@ -69,8 +69,8 @@ def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
                             for temp_name, model in model_names:
                                 model_num = temp_name.split('_')[1]
                                 preds_from_dict = preds_dict[obj_name][model]
-                                score_type_preds.append({f"{key.upper()}{obj_name.upper()}C{model_num}C": preds_from_dict[0]})
-                                score_type_preds.append({f"{key.upper()}{obj_name.upper()}C{model_num}P": preds_from_dict[1]})
+                                score_type_preds[f"{key.upper()}{obj_name.upper()}C{model_num}C"] = preds_from_dict[0][0]
+                                score_type_preds[f"{key.upper()}{obj_name.upper()}C{model_num}P"] = preds_from_dict[1][0]
                 except KeyError:
                     pass
             mapped_preds[score_type] = score_type_preds
@@ -78,7 +78,7 @@ def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
 
     if not if_binary:
         mapped_preds = {}
-        score_type_preds = []
+        score_type_preds = {}
         for key, models_dict in model_mapping.items():
             try:
                 models_name_list = models_dict["trading_score"]
@@ -87,10 +87,10 @@ def map_preds_to_model_names(preds_dict, model_mapping, if_binary):
                         for temp_name, model in model_names:
                             model_num = temp_name.split('_')[1]
                             preds_from_dict = preds_dict[obj_name][model]
-                            score_type_preds.append({f"{key.upper()}{obj_name.upper()}C{model_num}C": preds_from_dict[0]})
-                            score_type_preds.append({f"{key.upper()}{obj_name.upper()}C{model_num}P": preds_from_dict[1]})
+                            score_type_preds[f"{key.upper()}{obj_name.upper()}C{model_num}C"] = preds_from_dict[0][0]
+                            score_type_preds[f"{key.upper()}{obj_name.upper()}C{model_num}P"] = preds_from_dict[1][0]
             except KeyError:
-                print("error")
+                log.info("Error while finding keys for model map.")
                 pass
         mapped_preds["trading_score"] = score_type_preds
         return mapped_preds

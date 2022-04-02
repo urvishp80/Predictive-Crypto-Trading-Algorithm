@@ -37,225 +37,57 @@ models_full_list = {"obj8": {"min_max_consecutive_losses": [{"obj8": [("Class_0"
 
 binary_score_api_response = {
     "binary_score": [
-        {
-            "OBJ5OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ5OBJ8C0P": [
-                0.0
-            ]
-        }
+        "OBJ5OBJ8C0C",
+        "OBJ5OBJ8C0P"
     ],
     "martingale_return": [
-        {
-            "OBJ8OBJ5C5C": [
-                0.32472220335800406
-            ]
-        },
-        {
-            "OBJ8OBJ5C5P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ5C1C": [
-                0.2983493046863563
-            ]
-        },
-        {
-            "OBJ7OBJ5C1P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ5C10C": [
-                0.36636859910368796
-            ]
-        },
-        {
-            "OBJ7OBJ5C10P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ5C24C": [
-                0.46899770815571984
-            ]
-        },
-        {
-            "OBJ7OBJ5C24P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ6OBJ6C2C": [
-                0.5642552367348699
-            ]
-        },
-        {
-            "OBJ6OBJ6C2P": [
-                1.0
-            ]
-        },
-        {
-            "OBJ6OBJ6C8C": [
-                0.36631845835738747
-            ]
-        },
-        {
-            "OBJ6OBJ6C8P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ6OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ6OBJ8C0P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ6OBJ8C4C": [
-                0.37896370832467513
-            ]
-        },
-        {
-            "OBJ6OBJ8C4P": [
-                0.0
-            ]
-        }
+        "OBJ6OBJ6C2C",
+        "OBJ6OBJ6C2P",
+        "OBJ6OBJ6C8C",
+        "OBJ6OBJ6C8P",
+        "OBJ6OBJ8C0C",
+        "OBJ6OBJ8C0P",
+        "OBJ6OBJ8C4C",
+        "OBJ6OBJ8C4P",
+        "OBJ7OBJ5C10C",
+        "OBJ7OBJ5C10P",
+        "OBJ7OBJ5C1C",
+        "OBJ7OBJ5C1P",
+        "OBJ7OBJ5C24C",
+        "OBJ7OBJ5C24P",
+        "OBJ8OBJ5C5C",
+        "OBJ8OBJ5C5P"
     ],
     "min_max_consecutive_losses": [
-        {
-            "OBJ8OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ8OBJ8C0P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ8OBJ6C8C": [
-                0.36631845835738747
-            ]
-        },
-        {
-            "OBJ8OBJ6C8P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ7OBJ8C0P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ6C8C": [
-                0.36631845835738747
-            ]
-        },
-        {
-            "OBJ7OBJ6C8P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ6OBJ6C8C": [
-                0.36631845835738747
-            ]
-        },
-        {
-            "OBJ6OBJ6C8P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ6OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ6OBJ8C0P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ5OBJ6C8C": [
-                0.36631845835738747
-            ]
-        },
-        {
-            "OBJ5OBJ6C8P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ5OBJ8C0C": [
-                0.3386356590299877
-            ]
-        },
-        {
-            "OBJ5OBJ8C0P": [
-                0.0
-            ]
-        }
+        "OBJ5OBJ6C8C",
+        "OBJ5OBJ6C8P",
+        "OBJ5OBJ8C0C",
+        "OBJ5OBJ8C0P",
+        "OBJ6OBJ6C8C",
+        "OBJ6OBJ6C8P",
+        "OBJ6OBJ8C0C",
+        "OBJ6OBJ8C0P",
+        "OBJ7OBJ6C8C",
+        "OBJ7OBJ6C8P",
+        "OBJ7OBJ8C0C",
+        "OBJ7OBJ8C0P",
+        "OBJ8OBJ6C8C",
+        "OBJ8OBJ6C8P",
+        "OBJ8OBJ8C0C",
+        "OBJ8OBJ8C0P"
     ]
 }
 
 trading_score_api_response = {
     "trading_score": [
-        {
-            "OBJ7OBJ8C9C": [
-                0.5518756539054295
-            ]
-        },
-        {
-            "OBJ7OBJ8C9P": [
-                1.0
-            ]
-        },
-        {
-            "OBJ7OBJ5C10C": [
-                0.36636859910368796
-            ]
-        },
-        {
-            "OBJ7OBJ5C10P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ7OBJ5C27C": [
-                0.4733475538475333
-            ]
-        },
-        {
-            "OBJ7OBJ5C27P": [
-                0.0
-            ]
-        },
-        {
-            "OBJ5OBJ8C6C": [
-                0.322308893095849
-            ]
-        },
-        {
-            "OBJ5OBJ8C6P": [
-                0.0
-            ]
-        }
+        "OBJ5OBJ8C6C",
+        "OBJ5OBJ8C6P",
+        "OBJ7OBJ5C10C",
+        "OBJ7OBJ5C10P",
+        "OBJ7OBJ5C27C",
+        "OBJ7OBJ5C27P",
+        "OBJ7OBJ8C9C",
+        "OBJ7OBJ8C9P"
     ]
 }
 # {"obj8": [("Class 4", "lgb_Obj 8 Linked_scale_pos_weight_5_30"),("Class 0", "lgb_Obj 8 Linked_scale_pos_weight_4_85")]}
