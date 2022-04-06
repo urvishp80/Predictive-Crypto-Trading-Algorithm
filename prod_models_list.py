@@ -35,61 +35,53 @@ models_full_list = {"obj8": {"min_max_consecutive_losses": [{"obj8": [("Class_0"
                              }
                     }
 
-binary_score_api_response = {
-    "binary_score": [
-        "OBJ5OBJ8C0C",
-        "OBJ5OBJ8C0P"
-    ],
-    "martingale_return": [
-        "OBJ6OBJ6C2C",
-        "OBJ6OBJ6C2P",
-        "OBJ6OBJ6C8C",
-        "OBJ6OBJ6C8P",
-        "OBJ6OBJ8C0C",
-        "OBJ6OBJ8C0P",
-        "OBJ6OBJ8C4C",
-        "OBJ6OBJ8C4P",
-        "OBJ7OBJ5C10C",
-        "OBJ7OBJ5C10P",
-        "OBJ7OBJ5C1C",
-        "OBJ7OBJ5C1P",
-        "OBJ7OBJ5C24C",
-        "OBJ7OBJ5C24P",
-        "OBJ8OBJ5C5C",
-        "OBJ8OBJ5C5P"
-    ],
-    "min_max_consecutive_losses": [
-        "OBJ5OBJ6C8C",
-        "OBJ5OBJ6C8P",
-        "OBJ5OBJ8C0C",
-        "OBJ5OBJ8C0P",
-        "OBJ6OBJ6C8C",
-        "OBJ6OBJ6C8P",
-        "OBJ6OBJ8C0C",
-        "OBJ6OBJ8C0P",
-        "OBJ7OBJ6C8C",
-        "OBJ7OBJ6C8P",
-        "OBJ7OBJ8C0C",
-        "OBJ7OBJ8C0P",
-        "OBJ8OBJ6C8C",
-        "OBJ8OBJ6C8P",
-        "OBJ8OBJ8C0C",
-        "OBJ8OBJ8C0P"
-    ]
-}
+binary_score_api_response = (
+  "binary_score_OBJ5OBJ8C0C",
+  "binary_score_OBJ5OBJ8C0P",
+  "martingale_return_OBJ6OBJ6C2C",
+  "martingale_return_OBJ6OBJ6C2P",
+  "martingale_return_OBJ6OBJ6C8C",
+  "martingale_return_OBJ6OBJ6C8P",
+  "martingale_return_OBJ6OBJ8C0C",
+  "martingale_return_OBJ6OBJ8C0P",
+  "martingale_return_OBJ6OBJ8C4C",
+  "martingale_return_OBJ6OBJ8C4P",
+  "martingale_return_OBJ7OBJ5C10C",
+  "martingale_return_OBJ7OBJ5C10P",
+  "martingale_return_OBJ7OBJ5C1C",
+  "martingale_return_OBJ7OBJ5C1P",
+  "martingale_return_OBJ7OBJ5C24C",
+  "martingale_return_OBJ7OBJ5C24P",
+  "martingale_return_OBJ8OBJ5C5C",
+  "martingale_return_OBJ8OBJ5C5P",
+  "min_max_consecutive_losses_OBJ5OBJ6C8C",
+  "min_max_consecutive_losses_OBJ5OBJ6C8P",
+  "min_max_consecutive_losses_OBJ5OBJ8C0C",
+  "min_max_consecutive_losses_OBJ5OBJ8C0P",
+  "min_max_consecutive_losses_OBJ6OBJ6C8C",
+  "min_max_consecutive_losses_OBJ6OBJ6C8P",
+  "min_max_consecutive_losses_OBJ6OBJ8C0C",
+  "min_max_consecutive_losses_OBJ6OBJ8C0P",
+  "min_max_consecutive_losses_OBJ7OBJ6C8C",
+  "min_max_consecutive_losses_OBJ7OBJ6C8P",
+  "min_max_consecutive_losses_OBJ7OBJ8C0C",
+  "min_max_consecutive_losses_OBJ7OBJ8C0P",
+  "min_max_consecutive_losses_OBJ8OBJ6C8C",
+  "min_max_consecutive_losses_OBJ8OBJ6C8P",
+  "min_max_consecutive_losses_OBJ8OBJ8C0C",
+  "min_max_consecutive_losses_OBJ8OBJ8C0P"
+)
 
-trading_score_api_response = {
-    "trading_score": [
-        "OBJ5OBJ8C6C",
-        "OBJ5OBJ8C6P",
-        "OBJ7OBJ5C10C",
-        "OBJ7OBJ5C10P",
-        "OBJ7OBJ5C27C",
-        "OBJ7OBJ5C27P",
-        "OBJ7OBJ8C9C",
-        "OBJ7OBJ8C9P"
-    ]
-}
+trading_score_api_response = (
+    "trading_score_OBJ5OBJ8C6C",
+  "trading_score_OBJ5OBJ8C6P",
+  "trading_score_OBJ7OBJ5C10C",
+  "trading_score_OBJ7OBJ5C10P",
+  "trading_score_OBJ7OBJ5C27C",
+  "trading_score_OBJ7OBJ5C27P",
+  "trading_score_OBJ7OBJ8C9C",
+  "trading_score_OBJ7OBJ8C9P"
+  )
 # {"obj8": [("Class 4", "lgb_Obj 8 Linked_scale_pos_weight_5_30"),("Class 0", "lgb_Obj 8 Linked_scale_pos_weight_4_85")]}
 # {"obj8": [("Class 0", "lgb_Obj 8 Linked_scale_pos_weight_4_85")]},
 #                                                    {"obj6": [("Class 2", "lgb_Obj 6 Linked_scale_pos_weight_2_15"),

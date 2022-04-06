@@ -92,6 +92,7 @@ def get_indicators(data, intervals=(5, 10, 20, 50, 100), PROD_MODE=False):
             indicators['low_VAR_{}'.format(i)] = talib.VAR(data['low'], timeperiod=i, nbdev=1)
         for i in [5, 15, 30]:
             indicators['NATR_{}'.format(i)] = talib.NATR(data['high'], data['low'], data['close'], timeperiod=i)
+    # this one is for non-production and for training the model
     else:
         for i in intervals:
             indicators['DEMA_{}'.format(i)] = talib.DEMA(data['close'], timeperiod=i)

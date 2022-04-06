@@ -2,9 +2,11 @@ import warnings
 import pandas as pd
 import os
 from flask import Flask, request, Response
+from flask import jsonify
 from glob import glob
 import logging
 import time
+import traceback
 
 import config
 from src.models import LightGBMModel
@@ -123,10 +125,14 @@ def getPredictions():
         if prev_data_dict is None:
             cache["prev_data"] = current_data
             df = pd.DataFrame.from_dict(current_data)
+            df['Date'] = pd.to_datetime(df['unix'], unit='ms')
+            df = df.sort_values(by='Date', ascending=True).reset_index(drop=True)
         else:
             prev_data_dict.extend(current_data)
             prev_data_dict.pop(0)
             df = pd.DataFrame.from_dict(prev_data_dict)
+            df['Date'] = pd.to_datetime(df['unix'], unit='ms')
+            df = df.sort_values(by='Date', ascending=True).reset_index(drop=True)
 
         if if_binary.lower() == "true":
             log.info("Doing prediction for binary trading score.")
@@ -140,13 +146,14 @@ def getPredictions():
         log.info(f"time for request to get done {(end_time - start_time)}")
         return mapped_response
     except Exception as ex:
+        log.error(f"Error: {traceback.format_exc()}")
         return Response(f"An error occurred. {ex}.", status=400)
 
 
 @app.route('/api/get_binary_score_response', methods=['GET'])
 def get_binary_api_response():
     try:
-        return binary_score_api_response
+        return jsonify(binary_score_api_response)
     except Exception as ex:
         return Response(f"An error occurred. {ex}.", status=400)
 
@@ -154,7 +161,7 @@ def get_binary_api_response():
 @app.route("/api/get_trading_score_response", methods=['GET'])
 def get_trading_score_response():
     try:
-        return trading_score_api_response
+        return jsonify(trading_score_api_response)
     except Exception as ex:
         return Response(f"An error occurred. {ex}.", status=400)
 
