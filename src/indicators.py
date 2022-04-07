@@ -1,6 +1,8 @@
 import talib
 import pandas as pd
 import pandas_ta as ta
+import time
+
 
 def enrich_data(data):
     """
@@ -147,26 +149,30 @@ def get_indicators(data, intervals=(5, 10, 20, 50, 100), PROD_MODE=False):
 def get_additional_indicators(data):
     # additional_indicators = []
     # prev_col = data.columns
-    log_return = data.ta.log_return(cumulative=True)
-    percent_return = data.ta.percent_return(cumulative=True)
-    cksp = data.ta.cksp()
-    alma = data.ta.alma()
-    adosc = data.ta.adosc()
-    aroon = data.ta.aroon()
-    atr = data.ta.atr()
-    chop = data.ta.chop()
-    tsi = data.ta.tsi()
-    ichimoku = data.ta.ichimoku()
-    donchian = data.ta.donchian(lower_length=10, upper_length=15)
-    hma = data.ta.hma()
-    kama = data.ta.kama()
-    stochrsi = data.ta.stochrsi()
-    coppock = data.ta.coppock()
-    dm = data.ta.dm()
-    massi = data.ta.massi()
-    mfi = data.ta.mfi()
-    eri = data.ta.eri()
-    true_range = data.ta.true_range()
+    start_time = time.time()
+    log_return = data.ta.log_return(cumulative=True, cores=4)
+    percent_return = data.ta.percent_return(cumulative=True, cores=4)
+    cksp = data.ta.cksp(cores=4)
+    alma = data.ta.alma(cores=4)
+    adosc = data.ta.adosc(cores=4)
+    aroon = data.ta.aroon(cores=4)
+    atr = data.ta.atr(cores=4)
+    chop = data.ta.chop(cores=4)
+    tsi = data.ta.tsi(cores=4)
+    ichimoku = data.ta.ichimoku(cores=4)
+    donchian = data.ta.donchian(lower_length=10, upper_length=15, cores=4)
+    hma = data.ta.hma(cores=4)
+    kama = data.ta.kama(cores=4)
+    stochrsi = data.ta.stochrsi(cores=4)
+    coppock = data.ta.coppock(cores=4)
+    dm = data.ta.dm(cores=4)
+    massi = data.ta.massi(cores=4)
+    mfi = data.ta.mfi(cores=4)
+    eri = data.ta.eri(cores=4)
+    true_range = data.ta.true_range(cores=4)
+    end_time = time.time()
+    print("Time to do indicators 2 only.", ((end_time - start_time) * 1000))
+    start_time = time.time()
     all_indicators = [log_return, percent_return, cksp, alma, adosc, aroon, atr, chop, tsi,
                       ichimoku, donchian, hma, kama, stochrsi, coppock, dm, massi, mfi, eri,
                       true_range]
@@ -177,6 +183,8 @@ def get_additional_indicators(data):
                 df_and_series.append(j)
         else:
             df_and_series.append(df)
+    end_time = time.time()
+    print(f"Time to loop over data generateed {(end_time - start_time) * 1000}")
     # [df for df in all_indicators if type(df) != tuple else j for j in df for df in all_indicators]
     indicators = pd.concat(df_and_series, axis=1)
     return indicators

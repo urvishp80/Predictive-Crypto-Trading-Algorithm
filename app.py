@@ -143,7 +143,7 @@ def getPredictions():
             preds = predict_single_objective(df, trading_score_models_dir)
             mapped_response = map_preds_to_model_names(preds, models_full_list, False)
         end_time = time.time()
-        log.info(f"time for request to get done {(end_time - start_time)}")
+        log.info(f"time for request to get done {(end_time - start_time) * 1000}")
         return mapped_response
     except Exception as ex:
         log.error(f"Error: {traceback.format_exc()}")
