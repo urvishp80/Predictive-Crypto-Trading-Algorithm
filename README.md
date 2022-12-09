@@ -3,11 +3,11 @@ A project to build and train model to predict labels on crypto data.
 
 ## Set up and how to use it?
 
-1. Run in local machine or in any VM.
-    1. Install `python 3.8.5`.
-    2. Install `pip`.
+1. Run in local machine or in any VM. 
+    1. Install `python 3.8.5`. 
+    2. Install `pip`. 
     3. Install `build-essentials` in the linux using `apt install build-essential wget -y` along with `wget`.
-    3. Install TA-Lib using command
+    3. Install TA-Lib using command 
     ```
     wget https://artiya4u.keybase.pub/TA-lib/ta-lib-0.4.0-src.tar.gz \
     && tar -xvf ta-lib-0.4.0-src.tar.gz \
@@ -23,4 +23,3 @@ A project to build and train model to predict labels on crypto data.
     1. Install `docker` on your machine.
     2. Run command `docker build -t ml-algo .` in terminal once docker is running. This will create docker image for this repository.
     3. Run the image using command `docker run -p 5000:5000 ml-algo`. Here port is `5000` of docker is bined to `5000` port of host machine. It needs to be changed depending on the port you want to use.  
-    
