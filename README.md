@@ -22,4 +22,4 @@ A project to build and train model to predict labels on crypto data.
 2. Run using docker.
     1. Install `docker` on your machine.
     2. Run command `docker build -t ml-algo .` in terminal once docker is running. This will create docker image for this repository.
-    3. Run the image using command `docker run -p 5000:5000 ml-algo`. Here port is `5000` of docker is bined to `5000` port of host machine. It needs to be changed depending on the port you want to use.  
+    3. Run the image using command `docker run -p 5000:5000 ml-algo`. Here port is `5000` of docker is bined to `5000` port of host machine. It needs to be changed depending on the port you want to use.
