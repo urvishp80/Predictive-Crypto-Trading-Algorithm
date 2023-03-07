@@ -1,4 +1,4 @@
-# Predictive-Crypto-Trading-Algorithm
+# Predictive-Crypto-Trading-Algorithm  
 A project to build and train model to predict labels on crypto data.  
 
 ## Set up and how to use it?
